@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Checklist - Maternity Leave Planning</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f7;
+            color: #1d1d1f;
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-bottom: 30px;
+            border-radius: 12px;
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a6fd6;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #1d1d1f;
+            border: 1px solid #d2d2d7;
+        }
+
+        .btn-secondary:hover {
+            background: #f5f5f7;
+        }
+
+        .btn-danger {
+            background: #ff3b30;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e0352b;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.8rem;
+        }
+
+        .horizons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .horizon-column {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .horizon-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f5f5f7;
+        }
+
+        .horizon-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .horizon-count {
+            background: #f5f5f7;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .horizon-now .horizon-header { border-bottom-color: #ff9500; }
+        .horizon-on-leave .horizon-header { border-bottom-color: #34c759; }
+        .horizon-after-leave .horizon-header { border-bottom-color: #007aff; }
+        .horizon-completed .horizon-header { border-bottom-color: #8e8e93; }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-item {
+            background: #f9f9fb;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s;
+        }
+
+        .task-item:hover {
+            background: #f0f0f5;
+        }
+
+        .task-item.completed {
+            opacity: 0.6;
+        }
+
+        .task-item.completed .task-name {
+            text-decoration: line-through;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-name {
+            font-weight: 500;
+            font-size: 0.95rem;
+            word-break: break-word;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+
+        .task-category {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            background: #e8e8ed;
+            border-radius: 4px;
+            color: #666;
+        }
+
+        .task-confidence {
+            font-size: 0.75rem;
+            color: #8e8e93;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .task-action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            color: #8e8e93;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .task-action-btn:hover {
+            background: #e8e8ed;
+            color: #1d1d1f;
+        }
+
+        .task-notes {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #e8e8ed;
+        }
+
+        .task-notes-text {
+            font-size: 0.85rem;
+            color: #666;
+            white-space: pre-wrap;
+            margin-bottom: 8px;
+        }
+
+        .task-notes-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #d2d2d7;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .task-notes-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .move-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .move-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 100;
+            min-width: 150px;
+            overflow: hidden;
+        }
+
+        .move-dropdown.show {
+            display: block;
+        }
+
+        .move-option {
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: background 0.2s;
+        }
+
+        .move-option:hover {
+            background: #f5f5f7;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal h2 {
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #d2d2d7;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #8e8e93;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            header {
+                padding: 20px 15px;
+                border-radius: 0;
+                margin: -15px -15px 20px -15px;
+            }
+
+            header h1 {
+                font-size: 1.4rem;
+            }
+
+            .stats {
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 1.5rem;
+            }
+
+            .horizons {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Category colors */
+        .cat-people { background: #ffeaa7; }
+        .cat-statecraft { background: #dfe6e9; }
+        .cat-finance { background: #81ecec; }
+        .cat-household { background: #fab1a0; }
+        .cat-personal-admin { background: #a29bfe; color: white; }
+        .cat-personal-tech { background: #74b9ff; }
+        .cat-family-decisions { background: #fd79a8; color: white; }
+        .cat-health { background: #55efc4; }
+        .cat-personal-creative-goals { background: #fdcb6e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Maternity Leave Task Planner</h1>
+            <p>Track your tasks before, during, and after leave</p>
+            <div class="stats">
+                <div class="stat">
+                    <div class="stat-number" id="stat-total">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="stat-completed">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number" id="stat-remaining">0</div>
+                    <div class="stat-label">Remaining</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="openAddModal()">+ Add New Task</button>
+            <button class="btn btn-secondary" onclick="toggleCompleted()">
+                <span id="toggle-completed-text">Show Completed</span>
+            </button>
+        </div>
+
+        <div class="horizons">
+            <div class="horizon-column horizon-now">
+                <div class="horizon-header">
+                    <span class="horizon-title">Now (Before Leave)</span>
+                    <span class="horizon-count" id="count-now">0</span>
+                </div>
+                <div class="task-list" id="list-now"></div>
+            </div>
+
+            <div class="horizon-column horizon-on-leave">
+                <div class="horizon-header">
+                    <span class="horizon-title">On Leave</span>
+                    <span class="horizon-count" id="count-on-leave">0</span>
+                </div>
+                <div class="task-list" id="list-on-leave"></div>
+            </div>
+
+            <div class="horizon-column horizon-after-leave">
+                <div class="horizon-header">
+                    <span class="horizon-title">After Leave</span>
+                    <span class="horizon-count" id="count-after-leave">0</span>
+                </div>
+                <div class="task-list" id="list-after-leave"></div>
+            </div>
+
+            <div class="horizon-column horizon-completed" id="completed-column" style="display: none;">
+                <div class="horizon-header">
+                    <span class="horizon-title">Completed</span>
+                    <span class="horizon-count" id="count-completed">0</span>
+                </div>
+                <div class="task-list" id="list-completed"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal">
+            <h2 id="modal-title">Add New Task</h2>
+            <form id="task-form" onsubmit="saveTask(event)">
+                <input type="hidden" id="task-id">
+                <div class="form-group">
+                    <label for="task-name">Task Name *</label>
+                    <input type="text" id="task-name" required placeholder="What needs to be done?">
+                </div>
+                <div class="form-group">
+                    <label for="task-category">Category *</label>
+                    <select id="task-category" required>
+                        <option value="">Select category...</option>
+                        <option value="PEOPLE">People</option>
+                        <option value="STATECRAFT">Statecraft</option>
+                        <option value="FINANCE">Finance</option>
+                        <option value="HOUSEHOLD">Household</option>
+                        <option value="PERSONAL ADMIN">Personal Admin</option>
+                        <option value="PERSONAL TECH">Personal Tech</option>
+                        <option value="FAMILY DECISIONS">Family Decisions</option>
+                        <option value="HEALTH">Health</option>
+                        <option value="PERSONAL / CREATIVE GOALS">Personal / Creative Goals</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-horizon">Horizon *</label>
+                    <select id="task-horizon" required>
+                        <option value="Now">Now (Before Leave)</option>
+                        <option value="On Leave">On Leave</option>
+                        <option value="After Leave">After Leave</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="task-confidence">Confidence (%)</label>
+                    <input type="number" id="task-confidence" min="0" max="100" placeholder="e.g., 85">
+                </div>
+                <div class="form-group">
+                    <label for="task-notes-field">Notes</label>
+                    <textarea id="task-notes-field" placeholder="Add any additional details..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Initial data
+        const initialTasks = [
+            // PEOPLE
+            { id: 1, task: "Design performance tracking system for Beez", category: "PEOPLE", horizon: "Now", confidence: 95, notes: "", completed: false },
+            { id: 2, task: "Define promotion / raise criteria for Beez", category: "PEOPLE", horizon: "Now", confidence: 90, notes: "", completed: false },
+            { id: 3, task: "Define Rita's editorial authority and responsibilities", category: "PEOPLE", horizon: "Now", confidence: 90, notes: "", completed: false },
+            { id: 4, task: "Define Jasper's IFP work scope", category: "PEOPLE", horizon: "Now", confidence: 90, notes: "", completed: false },
+            { id: 5, task: "Set tracking cadence and artifacts for Beez", category: "PEOPLE", horizon: "Now", confidence: 85, notes: "", completed: false },
+            { id: 6, task: "Define Jasper's personal-life work scope", category: "PEOPLE", horizon: "Now", confidence: 85, notes: "", completed: false },
+            { id: 7, task: "Document editorial workflows for coverage", category: "PEOPLE", horizon: "Now", confidence: 80, notes: "", completed: false },
+            { id: 8, task: "Define Jasper's autonomy and default actions", category: "PEOPLE", horizon: "Now", confidence: 80, notes: "", completed: false },
+            { id: 9, task: "Hire new editor", category: "PEOPLE", horizon: "Now", confidence: 75, notes: "", completed: false },
+            { id: 10, task: "Onboard new editor", category: "PEOPLE", horizon: "Now", confidence: 70, notes: "", completed: false },
+
+            // STATECRAFT
+            { id: 11, task: "Bank episodes for weekly release during absence", category: "STATECRAFT", horizon: "Now", confidence: 95, notes: "", completed: false },
+            { id: 12, task: "Schedule / record episodes needed for banking", category: "STATECRAFT", horizon: "Now", confidence: 85, notes: "", completed: false },
+            { id: 13, task: "Plan episode targets for Q2 and Q3", category: "STATECRAFT", horizon: "Now", confidence: 80, notes: "", completed: false },
+            { id: 14, task: "Kick off guest outreach for Q2 / Q3", category: "STATECRAFT", horizon: "Now", confidence: 75, notes: "", completed: false },
+            { id: 15, task: "Identify deep-dive / flagship episodes", category: "STATECRAFT", horizon: "Now", confidence: 70, notes: "", completed: false },
+            { id: 16, task: "Plan video expansion for late Q2", category: "STATECRAFT", horizon: "After Leave", confidence: 85, notes: "", completed: false },
+
+            // FINANCE
+            { id: 17, task: "Confirm account is HSA or FSA", category: "FINANCE", horizon: "Now", confidence: 95, notes: "", completed: false },
+            { id: 18, task: "Finalize annual budget", category: "FINANCE", horizon: "Now", confidence: 90, notes: "", completed: false },
+            { id: 19, task: "Plan eligible usage for baby expenses", category: "FINANCE", horizon: "Now", confidence: 85, notes: "", completed: false },
+            { id: 20, task: "Build budget tracking system (MVP)", category: "FINANCE", horizon: "Now", confidence: 75, notes: "", completed: false },
+
+            // HOUSEHOLD
+            { id: 21, task: "Take down Christmas decorations", category: "HOUSEHOLD", horizon: "Now", confidence: 99, notes: "", completed: false },
+            { id: 22, task: "Design plan for shared kids' room", category: "HOUSEHOLD", horizon: "Now", confidence: 90, notes: "", completed: false },
+            { id: 23, task: "Add bookshelves in main room", category: "HOUSEHOLD", horizon: "Now", confidence: 85, notes: "", completed: false },
+            { id: 24, task: "Install IKEA cabinet in bedroom", category: "HOUSEHOLD", horizon: "Now", confidence: 85, notes: "", completed: false },
+            { id: 25, task: "Replace kitchen light", category: "HOUSEHOLD", horizon: "Now", confidence: 80, notes: "", completed: false },
+            { id: 26, task: "Decide keep/store/discard plan for closets", category: "HOUSEHOLD", horizon: "Now", confidence: 75, notes: "", completed: false },
+            { id: 27, task: "Add wallpaper/contact paper to refrigerator", category: "HOUSEHOLD", horizon: "Now", confidence: 70, notes: "", completed: false },
+            { id: 28, task: "Execute closet reorganization", category: "HOUSEHOLD", horizon: "On Leave", confidence: 60, notes: "", completed: false },
+            { id: 29, task: "Implement kids' room changes", category: "HOUSEHOLD", horizon: "After Leave", confidence: 60, notes: "", completed: false },
+
+            // PERSONAL ADMIN
+            { id: 30, task: "Buy new slacks", category: "PERSONAL ADMIN", horizon: "Now", confidence: 65, notes: "", completed: false },
+            { id: 31, task: "Clothing purge", category: "PERSONAL ADMIN", horizon: "On Leave", confidence: 65, notes: "", completed: false },
+            { id: 32, task: "Use gift card for clothing", category: "PERSONAL ADMIN", horizon: "On Leave", confidence: 55, notes: "", completed: false },
+
+            // PERSONAL TECH
+            { id: 33, task: "Buy domain and host personal site", category: "PERSONAL TECH", horizon: "Now", confidence: 85, notes: "", completed: false },
+            { id: 34, task: "Build food ordering / meal planning system", category: "PERSONAL TECH", horizon: "After Leave", confidence: 70, notes: "", completed: false },
+            { id: 35, task: "Sort and process Twitter bookmarks", category: "PERSONAL TECH", horizon: "After Leave", confidence: 60, notes: "", completed: false },
+
+            // FAMILY DECISIONS
+            { id: 36, task: "Choose baby name", category: "FAMILY DECISIONS", horizon: "Now", confidence: 95, notes: "", completed: false },
+            { id: 37, task: "Decide summer travel (weddings)", category: "FAMILY DECISIONS", horizon: "Now", confidence: 85, notes: "", completed: false },
+
+            // HEALTH
+            { id: 38, task: "Collect PT records and knee assessment", category: "HEALTH", horizon: "Now", confidence: 80, notes: "", completed: false },
+
+            // PERSONAL / CREATIVE GOALS
+            { id: 39, task: "Think seriously about writing a book", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", confidence: 70, notes: "", completed: false },
+            { id: 40, task: "Reading (25-30 books target)", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", confidence: 55, notes: "", completed: false },
+            { id: 41, task: "Reach 2300 blitz chess rating", category: "PERSONAL / CREATIVE GOALS", horizon: "After Leave", confidence: 60, notes: "", completed: false },
+        ];
+
+        // State
+        let tasks = [];
+        let showCompleted = false;
+        let expandedNotes = new Set();
+
+        // Initialize
+        function init() {
+            const saved = localStorage.getItem('maternity-tasks');
+            if (saved) {
+                tasks = JSON.parse(saved);
+            } else {
+                tasks = initialTasks;
+                saveTasks();
+            }
+            render();
+        }
+
+        // Save to localStorage
+        function saveTasks() {
+            localStorage.setItem('maternity-tasks', JSON.stringify(tasks));
+        }
+
+        // Get next ID
+        function getNextId() {
+            return Math.max(0, ...tasks.map(t => t.id)) + 1;
+        }
+
+        // Get category class
+        function getCategoryClass(category) {
+            const map = {
+                'PEOPLE': 'cat-people',
+                'STATECRAFT': 'cat-statecraft',
+                'FINANCE': 'cat-finance',
+                'HOUSEHOLD': 'cat-household',
+                'PERSONAL ADMIN': 'cat-personal-admin',
+                'PERSONAL TECH': 'cat-personal-tech',
+                'FAMILY DECISIONS': 'cat-family-decisions',
+                'HEALTH': 'cat-health',
+                'PERSONAL / CREATIVE GOALS': 'cat-personal-creative-goals'
+            };
+            return map[category] || '';
+        }
+
+        // Render task item
+        function renderTask(task) {
+            const isExpanded = expandedNotes.has(task.id);
+            return `
+                <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+                    <div class="task-header">
+                        <input type="checkbox" class="task-checkbox"
+                            ${task.completed ? 'checked' : ''}
+                            onchange="toggleComplete(${task.id})">
+                        <div class="task-content">
+                            <div class="task-name">${escapeHtml(task.task)}</div>
+                            <div class="task-meta">
+                                <span class="task-category ${getCategoryClass(task.category)}">${escapeHtml(task.category)}</span>
+                                ${task.confidence ? `<span class="task-confidence">${task.confidence}%</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="task-action-btn" onclick="toggleNotes(${task.id})" title="Notes">
+                                ${task.notes ? '📝' : '📋'}
+                            </button>
+                            <button class="task-action-btn" onclick="openEditModal(${task.id})" title="Edit">✏️</button>
+                            <div class="move-menu">
+                                <button class="task-action-btn" onclick="toggleMoveMenu(event, ${task.id})" title="Move">↔️</button>
+                                <div class="move-dropdown" id="move-menu-${task.id}">
+                                    <div class="move-option" onclick="moveTask(${task.id}, 'Now')">→ Now (Before Leave)</div>
+                                    <div class="move-option" onclick="moveTask(${task.id}, 'On Leave')">→ On Leave</div>
+                                    <div class="move-option" onclick="moveTask(${task.id}, 'After Leave')">→ After Leave</div>
+                                </div>
+                            </div>
+                            <button class="task-action-btn" onclick="deleteTask(${task.id})" title="Delete">🗑️</button>
+                        </div>
+                    </div>
+                    ${isExpanded ? `
+                        <div class="task-notes">
+                            ${task.notes ? `<div class="task-notes-text">${escapeHtml(task.notes)}</div>` : ''}
+                            <textarea class="task-notes-input"
+                                placeholder="Add notes..."
+                                onblur="saveNotes(${task.id}, this.value)">${escapeHtml(task.notes || '')}</textarea>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Escape HTML
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Render all
+        function render() {
+            const horizons = ['Now', 'On Leave', 'After Leave'];
+            const listIds = ['list-now', 'list-on-leave', 'list-after-leave'];
+            const countIds = ['count-now', 'count-on-leave', 'count-after-leave'];
+
+            horizons.forEach((horizon, index) => {
+                const filtered = tasks.filter(t => t.horizon === horizon && !t.completed);
+                const sorted = filtered.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+
+                document.getElementById(listIds[index]).innerHTML = sorted.length
+                    ? sorted.map(renderTask).join('')
+                    : '<div class="empty-state">No tasks</div>';
+                document.getElementById(countIds[index]).textContent = sorted.length;
+            });
+
+            // Completed
+            const completed = tasks.filter(t => t.completed);
+            document.getElementById('list-completed').innerHTML = completed.length
+                ? completed.map(renderTask).join('')
+                : '<div class="empty-state">No completed tasks</div>';
+            document.getElementById('count-completed').textContent = completed.length;
+
+            // Stats
+            const total = tasks.length;
+            const completedCount = completed.length;
+            document.getElementById('stat-total').textContent = total;
+            document.getElementById('stat-completed').textContent = completedCount;
+            document.getElementById('stat-remaining').textContent = total - completedCount;
+        }
+
+        // Toggle complete
+        function toggleComplete(id) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.completed = !task.completed;
+                saveTasks();
+                render();
+            }
+        }
+
+        // Toggle notes
+        function toggleNotes(id) {
+            if (expandedNotes.has(id)) {
+                expandedNotes.delete(id);
+            } else {
+                expandedNotes.add(id);
+            }
+            render();
+        }
+
+        // Save notes
+        function saveNotes(id, notes) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.notes = notes;
+                saveTasks();
+            }
+        }
+
+        // Move task
+        function moveTask(id, horizon) {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.horizon = horizon;
+                task.completed = false;
+                saveTasks();
+                render();
+            }
+            closeAllMenus();
+        }
+
+        // Delete task
+        function deleteTask(id) {
+            if (confirm('Delete this task?')) {
+                tasks = tasks.filter(t => t.id !== id);
+                saveTasks();
+                render();
+            }
+        }
+
+        // Toggle move menu
+        function toggleMoveMenu(event, id) {
+            event.stopPropagation();
+            closeAllMenus();
+            const menu = document.getElementById(`move-menu-${id}`);
+            if (menu) {
+                menu.classList.toggle('show');
+            }
+        }
+
+        // Close all menus
+        function closeAllMenus() {
+            document.querySelectorAll('.move-dropdown').forEach(m => m.classList.remove('show'));
+        }
+
+        // Toggle completed column
+        function toggleCompleted() {
+            showCompleted = !showCompleted;
+            document.getElementById('completed-column').style.display = showCompleted ? 'block' : 'none';
+            document.getElementById('toggle-completed-text').textContent = showCompleted ? 'Hide Completed' : 'Show Completed';
+        }
+
+        // Open add modal
+        function openAddModal() {
+            document.getElementById('modal-title').textContent = 'Add New Task';
+            document.getElementById('task-id').value = '';
+            document.getElementById('task-form').reset();
+            document.getElementById('modal-overlay').classList.add('show');
+        }
+
+        // Open edit modal
+        function openEditModal(id) {
+            const task = tasks.find(t => t.id === id);
+            if (!task) return;
+
+            document.getElementById('modal-title').textContent = 'Edit Task';
+            document.getElementById('task-id').value = id;
+            document.getElementById('task-name').value = task.task;
+            document.getElementById('task-category').value = task.category;
+            document.getElementById('task-horizon').value = task.horizon;
+            document.getElementById('task-confidence').value = task.confidence || '';
+            document.getElementById('task-notes-field').value = task.notes || '';
+            document.getElementById('modal-overlay').classList.add('show');
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.remove('show');
+        }
+
+        // Save task
+        function saveTask(event) {
+            event.preventDefault();
+
+            const id = document.getElementById('task-id').value;
+            const taskData = {
+                task: document.getElementById('task-name').value,
+                category: document.getElementById('task-category').value,
+                horizon: document.getElementById('task-horizon').value,
+                confidence: parseInt(document.getElementById('task-confidence').value) || null,
+                notes: document.getElementById('task-notes-field').value,
+            };
+
+            if (id) {
+                // Edit existing
+                const task = tasks.find(t => t.id === parseInt(id));
+                if (task) {
+                    Object.assign(task, taskData);
+                }
+            } else {
+                // Add new
+                tasks.push({
+                    id: getNextId(),
+                    ...taskData,
+                    completed: false
+                });
+            }
+
+            saveTasks();
+            render();
+            closeModal();
+        }
+
+        // Close menus on click outside
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.move-menu')) {
+                closeAllMenus();
+            }
+        });
+
+        // Close modal on overlay click
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal-overlay')) {
+                closeModal();
+            }
+        });
+
+        // Initialize
+        init();
+    </script>
+</body>
+</html>
