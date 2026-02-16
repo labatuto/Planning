@@ -55,13 +55,12 @@
             padding: 16px;
         }
 
-        /* ---- Header ---- */
+        /* ---- Compact Header ---- */
         header {
-            text-align: center;
-            padding: 28px 20px 22px;
+            padding: 14px 20px 12px;
             background: linear-gradient(135deg, var(--golden) 0%, var(--sunset-2) 40%, var(--sunset-3) 70%, var(--sunset-4) 100%);
             color: white;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             border-radius: var(--radius);
             position: relative;
             overflow: hidden;
@@ -70,49 +69,54 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.15) 100%);
+            background: linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.12) 100%);
             pointer-events: none;
         }
+        .header-row {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            position: relative;
+            gap: 12px;
+        }
         header h1 {
-            font-size: 1.6rem;
+            font-size: 1.15rem;
             font-weight: 700;
             letter-spacing: -0.02em;
-            position: relative;
+            white-space: nowrap;
         }
-        header p {
+        .header-stats {
+            font-size: 0.8rem;
+            font-weight: 500;
             opacity: 0.85;
-            font-size: 0.88rem;
-            margin-top: 4px;
+            white-space: nowrap;
+        }
+        .progress-bar {
             position: relative;
-            font-weight: 400;
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
         }
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 32px;
-            margin-top: 18px;
-            position: relative;
-        }
-        .stat-number {
-            font-size: 1.7rem;
-            font-weight: 700;
-        }
-        .stat-label {
-            font-size: 0.75rem;
-            opacity: 0.75;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
+        .progress-fill {
+            height: 100%;
+            background: rgba(255,255,255,0.85);
+            border-radius: 2px;
+            transition: width 0.4s ease;
+            width: 0%;
         }
 
         /* ---- Filter Bar ---- */
         .filter-bar {
             display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
+            gap: 5px;
             overflow-x: auto;
-            padding-bottom: 4px;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
+            flex: 1;
+            min-width: 0;
+            padding: 2px 0;
         }
         .filter-bar::-webkit-scrollbar { display: none; }
         .filter-pill {
@@ -139,12 +143,42 @@
             border-color: var(--coral);
         }
 
-        /* ---- Controls ---- */
-        .controls {
+        /* ---- Toolbar (merged filter + actions) ---- */
+        .toolbar {
             display: flex;
+            align-items: center;
             gap: 8px;
-            margin-bottom: 16px;
-            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .toolbar-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+        .toolbar-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-family: var(--font);
+            flex-shrink: 0;
+        }
+        .toolbar-btn:hover {
+            background: var(--card-bg-hover);
+            color: var(--text-primary);
+        }
+        .toolbar-btn.active {
+            background: var(--coral);
+            color: white;
+            border-color: var(--coral);
         }
         .btn {
             padding: 9px 18px;
@@ -171,12 +205,7 @@
             background: var(--card-bg-hover);
             color: var(--text-primary);
         }
-        .btn-notepad {
-            background: linear-gradient(135deg, var(--lavender), var(--sunset-3));
-            color: white;
-            margin-left: auto;
-        }
-        .btn-notepad:hover { filter: brightness(1.1); }
+        /* (notepad button is now a toolbar-btn icon) */
 
         /* ---- Columns ---- */
         .columns-container {
@@ -401,35 +430,84 @@
             color: var(--text-primary);
         }
 
-        /* ---- Notepad Panel ---- */
-        .notepad-panel {
-            display: none;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 18px;
-            margin-top: 16px;
+        /* ---- Notepad Drawer ---- */
+        .notepad-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 500;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            backdrop-filter: blur(2px);
         }
-        .notepad-panel.show { display: block; }
+        .notepad-backdrop.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .notepad-drawer {
+            position: fixed;
+            top: 0; right: 0; bottom: 0;
+            width: 400px;
+            max-width: 100vw;
+            background: var(--bg-secondary);
+            border-left: 1px solid var(--border);
+            z-index: 501;
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .notepad-drawer.show {
+            transform: translateX(0);
+        }
+        .notepad-drag-handle {
+            display: none;
+        }
+        .notepad-inner {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            padding: 20px;
+            gap: 14px;
+        }
         .notepad-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            flex-shrink: 0;
         }
         .notepad-header h3 {
             font-size: 1rem;
             font-weight: 600;
         }
+        .notepad-close {
+            width: 30px; height: 30px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .notepad-close:hover {
+            background: var(--card-bg-hover);
+            color: var(--text-primary);
+        }
         .notepad-textarea {
+            flex: 1;
             width: 100%;
-            min-height: 140px;
+            min-height: 0;
             padding: 12px;
             border: 1px solid var(--card-border);
             border-radius: var(--radius-sm);
-            font-size: 0.88rem;
+            font-size: 0.86rem;
             font-family: var(--font);
-            resize: vertical;
+            resize: none;
             background: rgba(0,0,0,0.25);
             color: var(--text-primary);
             line-height: 1.5;
@@ -442,22 +520,51 @@
         .notepad-actions {
             display: flex;
             gap: 8px;
-            margin-top: 12px;
             flex-wrap: wrap;
             align-items: center;
+            flex-shrink: 0;
         }
         .btn-ai {
+            padding: 9px 18px;
+            border: none;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: var(--font);
             background: linear-gradient(135deg, var(--teal), var(--sunset-4));
             color: white;
             display: flex;
             align-items: center;
             gap: 6px;
+            transition: all 0.2s;
         }
         .btn-ai:hover { filter: brightness(1.1); }
         .ai-status {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             color: var(--text-muted);
-            margin-left: 4px;
+        }
+        /* Mobile: bottom sheet instead of side panel */
+        @media (max-width: 900px) {
+            .notepad-drawer {
+                top: auto; left: 0; right: 0; bottom: 0;
+                width: 100%;
+                height: 72vh;
+                border-left: none;
+                border-top: 1px solid var(--border);
+                border-radius: 16px 16px 0 0;
+                transform: translateY(100%);
+            }
+            .notepad-drawer.show { transform: translateY(0); }
+            .notepad-drag-handle {
+                display: block;
+                width: 36px; height: 4px;
+                background: var(--text-muted);
+                border-radius: 2px;
+                margin: 10px auto 0;
+                opacity: 0.5;
+                flex-shrink: 0;
+            }
         }
 
         /* ---- Modal ---- */
@@ -550,6 +657,35 @@
             transition: none;
         }
 
+        /* ---- FAB ---- */
+        .fab {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--coral), var(--peach));
+            color: white;
+            border: none;
+            font-size: 1.6rem;
+            font-weight: 300;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(232, 99, 111, 0.4);
+            z-index: 400;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: var(--font);
+            line-height: 1;
+        }
+        .fab:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 28px rgba(232, 99, 111, 0.5);
+        }
+        .fab:active { transform: scale(0.95); }
+
         /* ---- Empty state ---- */
         .empty-state {
             text-align: center;
@@ -587,20 +723,15 @@
                 flex-shrink: 0;
             }
             .horizon-column:first-child { margin-left: 0; }
-            .container { padding: 12px; }
-            header {
-                padding: 20px 16px 18px;
-                margin-bottom: 14px;
-            }
-            header h1 { font-size: 1.3rem; }
-            .stats { gap: 22px; margin-top: 14px; }
-            .stat-number { font-size: 1.4rem; }
+            .container { padding: 10px; }
+            header { padding: 12px 16px 10px; margin-bottom: 10px; }
+            header h1 { font-size: 1.05rem; }
+            .fab { bottom: 20px; right: 16px; width: 48px; height: 48px; font-size: 1.4rem; }
         }
 
         @media (max-width: 500px) {
-            .controls { gap: 6px; }
-            .btn { padding: 8px 14px; font-size: 0.82rem; }
-            .horizon-column { min-width: 86vw; }
+            .horizon-column { min-width: 88vw; }
+            .toolbar-btn { width: 32px; height: 32px; font-size: 0.9rem; }
         }
 
         /* ---- Column nav dots (mobile) ---- */
@@ -634,32 +765,21 @@
 <body>
     <div class="container">
         <header>
-            <h1>Maternity Leave Task Planner</h1>
-            <p>Track your tasks before, during, and after leave</p>
-            <div class="stats">
-                <div class="stat">
-                    <div class="stat-number" id="stat-total">0</div>
-                    <div class="stat-label">Total</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number" id="stat-completed">0</div>
-                    <div class="stat-label">Done</div>
-                </div>
-                <div class="stat">
-                    <div class="stat-number" id="stat-remaining">0</div>
-                    <div class="stat-label">Remaining</div>
-                </div>
+            <div class="header-row">
+                <h1>Task Planner</h1>
+                <span class="header-stats" id="header-stats">0 remaining</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
             </div>
         </header>
 
-        <div class="filter-bar" id="filter-bar"></div>
-
-        <div class="controls">
-            <button class="btn btn-primary" onclick="openAddModal()">+ Add Task</button>
-            <button class="btn btn-secondary" onclick="toggleCompleted()">
-                <span id="toggle-completed-text">Show Completed</span>
-            </button>
-            <button class="btn btn-notepad" onclick="toggleNotepad()">Notepad</button>
+        <div class="toolbar">
+            <div class="filter-bar" id="filter-bar"></div>
+            <div class="toolbar-actions">
+                <button class="toolbar-btn" id="btn-completed" onclick="toggleCompleted()" title="Show completed">&#10003;</button>
+                <button class="toolbar-btn" onclick="openNotepad()" title="Notepad">&#9998;</button>
+            </div>
         </div>
 
         <div class="column-dots" id="column-dots">
@@ -702,15 +822,24 @@
             </div>
         </div>
 
-        <div class="notepad-panel" id="notepad-panel">
+    <!-- FAB -->
+    <button class="fab" onclick="openAddModal()" title="Add new task">+</button>
+
+    </div>
+
+    <!-- Notepad Drawer -->
+    <div class="notepad-backdrop" id="notepad-backdrop"></div>
+    <div class="notepad-drawer" id="notepad-drawer">
+        <div class="notepad-drag-handle"></div>
+        <div class="notepad-inner">
             <div class="notepad-header">
                 <h3>Notepad</h3>
-                <button class="btn btn-secondary" style="padding:5px 10px;font-size:0.78rem;" onclick="toggleNotepad()">Close</button>
+                <button class="notepad-close" onclick="closeNotepad()">&times;</button>
             </div>
             <textarea class="notepad-textarea" id="notepad-textarea"
-                placeholder="Dump your task ideas, notes, plans here..."></textarea>
+                placeholder="Dump task ideas, notes, plans here...&#10;&#10;Then hit Auto-categorize to turn them into tasks."></textarea>
             <div class="notepad-actions">
-                <button class="btn btn-ai" onclick="categorizeWithAI()">
+                <button class="btn-ai" onclick="categorizeWithAI()">
                     <span>&#10024;</span> Auto-categorize with AI
                 </button>
                 <span class="ai-status" id="ai-status"></span>
@@ -1044,12 +1173,13 @@
                 : '<div class="empty-state">No completed tasks</div>';
             document.getElementById('count-completed').textContent = tasks.filter(t => t.completed).length;
 
-            // Stats
+            // Header stats + progress bar
             const total = tasks.length;
             const completedCount = tasks.filter(t => t.completed).length;
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-completed').textContent = completedCount;
-            document.getElementById('stat-remaining').textContent = total - completedCount;
+            const remaining = total - completedCount;
+            const pct = total > 0 ? Math.round((completedCount / total) * 100) : 0;
+            document.getElementById('header-stats').textContent = `${completedCount}/${total} done \u00B7 ${remaining} left`;
+            document.getElementById('progress-fill').style.width = pct + '%';
         }
 
         // ================================================
@@ -1121,7 +1251,7 @@
         function toggleCompleted() {
             showCompleted = !showCompleted;
             document.getElementById('completed-column').style.display = showCompleted ? 'block' : 'none';
-            document.getElementById('toggle-completed-text').textContent = showCompleted ? 'Hide Completed' : 'Show Completed';
+            document.getElementById('btn-completed').classList.toggle('active', showCompleted);
         }
 
         // ================================================
@@ -1411,11 +1541,16 @@
         // ================================================
         // Notepad & AI
         // ================================================
-        function toggleNotepad() {
-            const panel = document.getElementById('notepad-panel');
-            panel.classList.toggle('show');
+        function openNotepad() {
+            document.getElementById('notepad-backdrop').classList.add('show');
+            document.getElementById('notepad-drawer').classList.add('show');
+        }
+        function closeNotepad() {
+            document.getElementById('notepad-backdrop').classList.remove('show');
+            document.getElementById('notepad-drawer').classList.remove('show');
         }
 
+        document.getElementById('notepad-backdrop').addEventListener('click', closeNotepad);
         document.getElementById('notepad-textarea').addEventListener('input', saveNotepad);
 
         function closeApiKeyModal() {
