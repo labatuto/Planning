@@ -3,445 +3,632 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Checklist - Maternity Leave Planning</title>
+    <title>Task Planner — Maternity Leave</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
+        :root {
+            --bg: #1a1128;
+            --bg-secondary: #231738;
+            --card-bg: rgba(255, 255, 255, 0.06);
+            --card-bg-hover: rgba(255, 255, 255, 0.09);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f0e6f6;
+            --text-secondary: #b8a9c8;
+            --text-muted: #7d6b8f;
+            --sunset-1: #f7a072;
+            --sunset-2: #e8636f;
+            --sunset-3: #c471db;
+            --sunset-4: #7b68ee;
+            --coral: #e8636f;
+            --peach: #f7a072;
+            --golden: #f0c060;
+            --teal: #4ecdc4;
+            --lavender: #b19cd9;
+            --blush: #f49ac2;
+            --border: rgba(255, 255, 255, 0.06);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --radius: 14px;
+            --radius-sm: 10px;
+            --font: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: #f5f5f7;
-            color: #1d1d1f;
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text-primary);
             line-height: 1.5;
             min-height: 100vh;
+            background-image:
+                radial-gradient(ellipse at 20% 0%, rgba(196, 113, 219, 0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 0%, rgba(247, 160, 114, 0.12) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 100%, rgba(123, 104, 238, 0.08) 0%, transparent 50%);
+            background-attachment: fixed;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 16px;
         }
 
+        /* ---- Header ---- */
         header {
             text-align: center;
-            padding: 30px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 28px 20px 22px;
+            background: linear-gradient(135deg, var(--golden) 0%, var(--sunset-2) 40%, var(--sunset-3) 70%, var(--sunset-4) 100%);
             color: white;
-            margin-bottom: 30px;
-            border-radius: 12px;
+            margin-bottom: 20px;
+            border-radius: var(--radius);
+            position: relative;
+            overflow: hidden;
         }
-
+        header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(0,0,0,0.15) 100%);
+            pointer-events: none;
+        }
         header h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            position: relative;
         }
-
         header p {
-            opacity: 0.9;
-            font-size: 0.95rem;
+            opacity: 0.85;
+            font-size: 0.88rem;
+            margin-top: 4px;
+            position: relative;
+            font-weight: 400;
         }
-
         .stats {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
-            flex-wrap: wrap;
+            gap: 32px;
+            margin-top: 18px;
+            position: relative;
         }
-
-        .stat {
-            text-align: center;
-        }
-
         .stat-number {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             font-weight: 700;
         }
-
         .stat-label {
-            font-size: 0.8rem;
-            opacity: 0.8;
+            font-size: 0.75rem;
+            opacity: 0.75;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
         }
 
+        /* ---- Filter Bar ---- */
+        .filter-bar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .filter-bar::-webkit-scrollbar { display: none; }
+        .filter-pill {
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--card-border);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-family: var(--font);
+            font-weight: 500;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .filter-pill:hover {
+            background: var(--card-bg-hover);
+            color: var(--text-primary);
+        }
+        .filter-pill.active {
+            background: var(--coral);
+            color: white;
+            border-color: var(--coral);
+        }
+
+        /* ---- Controls ---- */
         .controls {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 8px;
+            margin-bottom: 16px;
             flex-wrap: wrap;
         }
-
         .btn {
-            padding: 10px 20px;
+            padding: 9px 18px;
             border: none;
-            border-radius: 8px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 500;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: var(--font);
             transition: all 0.2s;
+            letter-spacing: -0.01em;
         }
-
         .btn-primary {
-            background: #667eea;
+            background: linear-gradient(135deg, var(--coral), var(--peach));
             color: white;
         }
-
-        .btn-primary:hover {
-            background: #5a6fd6;
-        }
-
+        .btn-primary:hover { filter: brightness(1.1); }
         .btn-secondary {
-            background: white;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--card-border);
         }
-
         .btn-secondary:hover {
-            background: #f5f5f7;
+            background: var(--card-bg-hover);
+            color: var(--text-primary);
         }
-
-        .btn-danger {
-            background: #ff3b30;
+        .btn-notepad {
+            background: linear-gradient(135deg, var(--lavender), var(--sunset-3));
             color: white;
+            margin-left: auto;
         }
+        .btn-notepad:hover { filter: brightness(1.1); }
 
-        .btn-danger:hover {
-            background: #e0352b;
-        }
-
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 0.8rem;
-        }
-
-        .horizons {
+        /* ---- Columns ---- */
+        .columns-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            gap: 16px;
         }
-
         .horizon-column {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            background: var(--bg-secondary);
+            border-radius: var(--radius);
+            padding: 16px;
+            border: 1px solid var(--border);
+            transition: box-shadow 0.25s, border-color 0.25s;
+            min-height: 120px;
         }
-
+        .horizon-column.drop-target {
+            border-color: var(--coral);
+            box-shadow: 0 0 20px rgba(232, 99, 111, 0.2), inset 0 0 20px rgba(232, 99, 111, 0.05);
+        }
         .horizon-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f5f5f7;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--border);
         }
+        .horizon-now .horizon-header { border-bottom-color: var(--peach); }
+        .horizon-on-leave .horizon-header { border-bottom-color: var(--teal); }
+        .horizon-after-leave .horizon-header { border-bottom-color: var(--lavender); }
+        .horizon-completed .horizon-header { border-bottom-color: var(--text-muted); }
 
         .horizon-title {
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
+            letter-spacing: -0.01em;
         }
-
         .horizon-count {
-            background: #f5f5f7;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #666;
+            background: var(--card-bg);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
-        .horizon-now .horizon-header { border-bottom-color: #ff9500; }
-        .horizon-on-leave .horizon-header { border-bottom-color: #34c759; }
-        .horizon-after-leave .horizon-header { border-bottom-color: #007aff; }
-        .horizon-completed .horizon-header { border-bottom-color: #8e8e93; }
-
+        /* ---- Task Cards ---- */
         .task-list {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
-
-        .task-item {
-            background: #f9f9fb;
-            border-radius: 8px;
-            padding: 12px;
+        .task-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            padding: 10px 12px;
             transition: all 0.2s;
+            cursor: grab;
+            position: relative;
+            user-select: none;
+            -webkit-user-select: none;
         }
-
-        .task-item:hover {
-            background: #f0f0f5;
+        .task-card:hover {
+            background: var(--card-bg-hover);
+            border-color: rgba(255,255,255,0.12);
         }
-
-        .task-item.completed {
-            opacity: 0.6;
+        .task-card.completed {
+            opacity: 0.45;
         }
-
-        .task-item.completed .task-name {
+        .task-card.completed .task-name {
             text-decoration: line-through;
         }
-
+        .task-card.dragging {
+            opacity: 0.25;
+            transform: scale(0.98);
+        }
+        .task-card.drag-over-above::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 8px;
+            right: 8px;
+            height: 2px;
+            background: var(--coral);
+            border-radius: 1px;
+        }
+        .task-card.drag-over-below::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 8px;
+            right: 8px;
+            height: 2px;
+            background: var(--coral);
+            border-radius: 1px;
+        }
         .task-header {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 8px;
         }
-
+        .task-priority {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            min-width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.04);
+            flex-shrink: 0;
+            margin-top: 2px;
+            letter-spacing: -0.02em;
+        }
         .task-checkbox {
-            width: 20px;
-            height: 20px;
+            width: 18px;
+            height: 18px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: var(--coral);
             flex-shrink: 0;
             margin-top: 2px;
         }
-
         .task-content {
             flex: 1;
             min-width: 0;
         }
-
         .task-name {
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.88rem;
             word-break: break-word;
+            line-height: 1.4;
         }
-
         .task-meta {
             display: flex;
-            gap: 8px;
-            margin-top: 6px;
+            gap: 6px;
+            margin-top: 5px;
             flex-wrap: wrap;
         }
-
         .task-category {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            background: #e8e8ed;
+            font-size: 0.7rem;
+            padding: 2px 7px;
             border-radius: 4px;
-            color: #666;
+            font-weight: 500;
+            letter-spacing: 0.02em;
         }
-
-        .task-confidence {
-            font-size: 0.75rem;
-            color: #8e8e93;
-        }
-
         .task-actions {
             display: flex;
-            gap: 4px;
+            gap: 2px;
             flex-shrink: 0;
         }
-
         .task-action-btn {
             background: none;
             border: none;
             cursor: pointer;
             padding: 4px;
-            border-radius: 4px;
-            color: #8e8e93;
-            font-size: 1rem;
+            border-radius: 6px;
+            color: var(--text-muted);
+            font-size: 0.9rem;
             transition: all 0.2s;
+            line-height: 1;
         }
-
         .task-action-btn:hover {
-            background: #e8e8ed;
-            color: #1d1d1f;
+            background: rgba(255,255,255,0.08);
+            color: var(--text-primary);
         }
-
         .task-notes {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #e8e8ed;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
         }
-
         .task-notes-text {
-            font-size: 0.85rem;
-            color: #666;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
             white-space: pre-wrap;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-
         .task-notes-input {
             width: 100%;
             padding: 8px;
-            border: 1px solid #d2d2d7;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-family: inherit;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            font-family: var(--font);
             resize: vertical;
-            min-height: 60px;
+            min-height: 56px;
+            background: rgba(0,0,0,0.2);
+            color: var(--text-primary);
         }
-
         .task-notes-input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--coral);
         }
 
-        .move-menu {
-            position: relative;
-            display: inline-block;
-        }
-
+        /* ---- Move menu ---- */
+        .move-menu { position: relative; display: inline-block; }
         .move-dropdown {
             display: none;
             position: absolute;
             right: 0;
             top: 100%;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            box-shadow: 0 8px 30px var(--shadow);
             z-index: 100;
-            min-width: 150px;
+            min-width: 160px;
             overflow: hidden;
         }
-
-        .move-dropdown.show {
-            display: block;
-        }
-
+        .move-dropdown.show { display: block; }
         .move-option {
-            padding: 10px 15px;
+            padding: 10px 14px;
             cursor: pointer;
-            font-size: 0.85rem;
-            transition: background 0.2s;
+            font-size: 0.82rem;
+            transition: background 0.15s;
+            color: var(--text-secondary);
         }
-
         .move-option:hover {
-            background: #f5f5f7;
+            background: var(--card-bg-hover);
+            color: var(--text-primary);
         }
 
-        /* Modal */
+        /* ---- Notepad Panel ---- */
+        .notepad-panel {
+            display: none;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-top: 16px;
+        }
+        .notepad-panel.show { display: block; }
+        .notepad-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .notepad-header h3 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+        .notepad-textarea {
+            width: 100%;
+            min-height: 140px;
+            padding: 12px;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.88rem;
+            font-family: var(--font);
+            resize: vertical;
+            background: rgba(0,0,0,0.25);
+            color: var(--text-primary);
+            line-height: 1.5;
+        }
+        .notepad-textarea:focus {
+            outline: none;
+            border-color: var(--lavender);
+        }
+        .notepad-textarea::placeholder { color: var(--text-muted); }
+        .notepad-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .btn-ai {
+            background: linear-gradient(135deg, var(--teal), var(--sunset-4));
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .btn-ai:hover { filter: brightness(1.1); }
+        .ai-status {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-left: 4px;
+        }
+
+        /* ---- Modal ---- */
         .modal-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.65);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            backdrop-filter: blur(4px);
         }
-
-        .modal-overlay.show {
-            display: flex;
-        }
-
+        .modal-overlay.show { display: flex; }
         .modal {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            max-width: 500px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 24px;
+            max-width: 480px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
         }
-
         .modal h2 {
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+            margin-bottom: 18px;
+            font-size: 1.15rem;
+            font-weight: 600;
         }
-
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 14px;
         }
-
         .form-group label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 5px;
             font-weight: 500;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
-
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
             padding: 10px 12px;
-            border: 1px solid #d2d2d7;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            font-family: inherit;
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.9rem;
+            font-family: var(--font);
+            background: rgba(0,0,0,0.2);
+            color: var(--text-primary);
         }
-
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--coral);
         }
-
+        .form-group select option {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
         .form-group textarea {
             resize: vertical;
-            min-height: 80px;
+            min-height: 72px;
         }
-
         .modal-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             justify-content: flex-end;
             margin-top: 20px;
         }
+        .btn-danger {
+            background: #c0392b;
+            color: white;
+        }
+        .btn-danger:hover { background: #a93226; }
 
+        /* ---- Drag ghost ---- */
+        .drag-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.92;
+            transform: scale(1.03) rotate(1.5deg);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+            border: 1px solid var(--coral) !important;
+            background: var(--bg-secondary) !important;
+            border-radius: var(--radius-sm);
+            transition: none;
+        }
+
+        /* ---- Empty state ---- */
         .empty-state {
             text-align: center;
-            padding: 30px;
-            color: #8e8e93;
-            font-size: 0.9rem;
+            padding: 24px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
+        /* ---- Category colors ---- */
+        .cat-people { background: rgba(240, 192, 96, 0.2); color: var(--golden); }
+        .cat-statecraft { background: rgba(232, 99, 111, 0.15); color: #f09090; }
+        .cat-finance { background: rgba(78, 205, 196, 0.18); color: var(--teal); }
+        .cat-household { background: rgba(247, 160, 114, 0.18); color: var(--peach); }
+        .cat-personal { background: rgba(177, 156, 217, 0.2); color: var(--lavender); }
+        .cat-health { background: rgba(78, 205, 140, 0.18); color: #6ddba0; }
+        .cat-personal-creative-goals { background: rgba(244, 154, 194, 0.18); color: var(--blush); }
+        .cat-rafa { background: rgba(123, 104, 238, 0.2); color: #9d8df0; }
+        .cat-nic { background: rgba(240, 192, 96, 0.18); color: #e8c86a; }
 
+        /* ---- Responsive ---- */
+        @media (max-width: 900px) {
+            .columns-container {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                gap: 12px;
+                padding-bottom: 12px;
+                scrollbar-width: none;
+            }
+            .columns-container::-webkit-scrollbar { display: none; }
+            .horizon-column {
+                min-width: 82vw;
+                scroll-snap-align: start;
+                flex-shrink: 0;
+            }
+            .horizon-column:first-child { margin-left: 0; }
+            .container { padding: 12px; }
             header {
-                padding: 20px 15px;
-                border-radius: 0;
-                margin: -15px -15px 20px -15px;
+                padding: 20px 16px 18px;
+                margin-bottom: 14px;
             }
-
-            header h1 {
-                font-size: 1.4rem;
-            }
-
-            .stats {
-                gap: 20px;
-            }
-
-            .stat-number {
-                font-size: 1.5rem;
-            }
-
-            .horizons {
-                grid-template-columns: 1fr;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
+            header h1 { font-size: 1.3rem; }
+            .stats { gap: 22px; margin-top: 14px; }
+            .stat-number { font-size: 1.4rem; }
         }
 
-        /* Category colors */
-        .cat-people { background: #ffeaa7; }
-        .cat-statecraft { background: #dfe6e9; }
-        .cat-finance { background: #81ecec; }
-        .cat-household { background: #fab1a0; }
-        .cat-personal-admin { background: #a29bfe; color: white; }
-        .cat-personal-tech { background: #74b9ff; }
-        .cat-family-decisions { background: #fd79a8; color: white; }
-        .cat-health { background: #55efc4; }
-        .cat-personal-creative-goals { background: #fdcb6e; }
+        @media (max-width: 500px) {
+            .controls { gap: 6px; }
+            .btn { padding: 8px 14px; font-size: 0.82rem; }
+            .horizon-column { min-width: 86vw; }
+        }
+
+        /* ---- Column nav dots (mobile) ---- */
+        .column-dots {
+            display: none;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        @media (max-width: 900px) {
+            .column-dots { display: flex; }
+        }
+        .column-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            opacity: 0.3;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+            padding: 0;
+        }
+        .column-dot.active {
+            opacity: 1;
+            background: var(--coral);
+            transform: scale(1.3);
+        }
     </style>
 </head>
 <body>
@@ -452,11 +639,11 @@
             <div class="stats">
                 <div class="stat">
                     <div class="stat-number" id="stat-total">0</div>
-                    <div class="stat-label">Total Tasks</div>
+                    <div class="stat-label">Total</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number" id="stat-completed">0</div>
-                    <div class="stat-label">Completed</div>
+                    <div class="stat-label">Done</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number" id="stat-remaining">0</div>
@@ -465,15 +652,24 @@
             </div>
         </header>
 
+        <div class="filter-bar" id="filter-bar"></div>
+
         <div class="controls">
-            <button class="btn btn-primary" onclick="openAddModal()">+ Add New Task</button>
+            <button class="btn btn-primary" onclick="openAddModal()">+ Add Task</button>
             <button class="btn btn-secondary" onclick="toggleCompleted()">
                 <span id="toggle-completed-text">Show Completed</span>
             </button>
+            <button class="btn btn-notepad" onclick="toggleNotepad()">Notepad</button>
         </div>
 
-        <div class="horizons">
-            <div class="horizon-column horizon-now">
+        <div class="column-dots" id="column-dots">
+            <button class="column-dot active" data-col="0"></button>
+            <button class="column-dot" data-col="1"></button>
+            <button class="column-dot" data-col="2"></button>
+        </div>
+
+        <div class="columns-container" id="columns-container">
+            <div class="horizon-column horizon-now" data-horizon="Now">
                 <div class="horizon-header">
                     <span class="horizon-title">Now (Before Leave)</span>
                     <span class="horizon-count" id="count-now">0</span>
@@ -481,7 +677,7 @@
                 <div class="task-list" id="list-now"></div>
             </div>
 
-            <div class="horizon-column horizon-on-leave">
+            <div class="horizon-column horizon-on-leave" data-horizon="On Leave">
                 <div class="horizon-header">
                     <span class="horizon-title">On Leave</span>
                     <span class="horizon-count" id="count-on-leave">0</span>
@@ -489,7 +685,7 @@
                 <div class="task-list" id="list-on-leave"></div>
             </div>
 
-            <div class="horizon-column horizon-after-leave">
+            <div class="horizon-column horizon-after-leave" data-horizon="After Leave">
                 <div class="horizon-header">
                     <span class="horizon-title">After Leave</span>
                     <span class="horizon-count" id="count-after-leave">0</span>
@@ -497,12 +693,27 @@
                 <div class="task-list" id="list-after-leave"></div>
             </div>
 
-            <div class="horizon-column horizon-completed" id="completed-column" style="display: none;">
+            <div class="horizon-column horizon-completed" data-horizon="Completed" id="completed-column" style="display: none;">
                 <div class="horizon-header">
                     <span class="horizon-title">Completed</span>
                     <span class="horizon-count" id="count-completed">0</span>
                 </div>
                 <div class="task-list" id="list-completed"></div>
+            </div>
+        </div>
+
+        <div class="notepad-panel" id="notepad-panel">
+            <div class="notepad-header">
+                <h3>Notepad</h3>
+                <button class="btn btn-secondary" style="padding:5px 10px;font-size:0.78rem;" onclick="toggleNotepad()">Close</button>
+            </div>
+            <textarea class="notepad-textarea" id="notepad-textarea"
+                placeholder="Dump your task ideas, notes, plans here..."></textarea>
+            <div class="notepad-actions">
+                <button class="btn btn-ai" onclick="categorizeWithAI()">
+                    <span>&#10024;</span> Auto-categorize with AI
+                </button>
+                <span class="ai-status" id="ai-status"></span>
             </div>
         </div>
     </div>
@@ -511,29 +722,29 @@
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal">
             <h2 id="modal-title">Add New Task</h2>
-            <form id="task-form" onsubmit="saveTask(event)">
+            <form id="task-form" onsubmit="saveTaskFromModal(event)">
                 <input type="hidden" id="task-id">
                 <div class="form-group">
-                    <label for="task-name">Task Name *</label>
+                    <label for="task-name">Task Name</label>
                     <input type="text" id="task-name" required placeholder="What needs to be done?">
                 </div>
                 <div class="form-group">
-                    <label for="task-category">Category *</label>
+                    <label for="task-category">Category</label>
                     <select id="task-category" required>
                         <option value="">Select category...</option>
                         <option value="PEOPLE">People</option>
                         <option value="STATECRAFT">Statecraft</option>
                         <option value="FINANCE">Finance</option>
                         <option value="HOUSEHOLD">Household</option>
-                        <option value="PERSONAL ADMIN">Personal Admin</option>
-                        <option value="PERSONAL TECH">Personal Tech</option>
-                        <option value="FAMILY DECISIONS">Family Decisions</option>
+                        <option value="PERSONAL">Personal</option>
                         <option value="HEALTH">Health</option>
                         <option value="PERSONAL / CREATIVE GOALS">Personal / Creative Goals</option>
+                        <option value="RAFA">Rafa</option>
+                        <option value="NIC">Nic</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="task-horizon">Horizon *</label>
+                    <label for="task-horizon">Horizon</label>
                     <select id="task-horizon" required>
                         <option value="Now">Now (Before Leave)</option>
                         <option value="On Leave">On Leave</option>
@@ -541,133 +752,231 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="task-confidence">Confidence (%)</label>
-                    <input type="number" id="task-confidence" min="0" max="100" placeholder="e.g., 85">
-                </div>
-                <div class="form-group">
                     <label for="task-notes-field">Notes</label>
-                    <textarea id="task-notes-field" placeholder="Add any additional details..."></textarea>
+                    <textarea id="task-notes-field" placeholder="Additional details..."></textarea>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Task</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- API Key Modal -->
+    <div class="modal-overlay" id="apikey-modal">
+        <div class="modal">
+            <h2>Anthropic API Key</h2>
+            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:14px;">
+                Enter your Anthropic API key to use AI categorization. It will be stored locally in your browser only.
+            </p>
+            <div class="form-group">
+                <label for="api-key-input">API Key</label>
+                <input type="password" id="api-key-input" placeholder="sk-ant-...">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeApiKeyModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveApiKey()">Save & Continue</button>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // Initial data
-        const initialTasks = [
-            // PEOPLE
-            { id: 1, task: "Design performance tracking system for Beez", category: "PEOPLE", horizon: "Now", confidence: 95, notes: "", completed: false },
-            { id: 2, task: "Define promotion / raise criteria for Beez", category: "PEOPLE", horizon: "Now", confidence: 90, notes: "", completed: false },
-            { id: 3, task: "Define Rita's editorial authority and responsibilities", category: "PEOPLE", horizon: "Now", confidence: 90, notes: "", completed: false },
-            { id: 4, task: "Define Jasper's IFP work scope", category: "PEOPLE", horizon: "Now", confidence: 90, notes: "", completed: false },
-            { id: 5, task: "Set tracking cadence and artifacts for Beez", category: "PEOPLE", horizon: "Now", confidence: 85, notes: "", completed: false },
-            { id: 6, task: "Define Jasper's personal-life work scope", category: "PEOPLE", horizon: "Now", confidence: 85, notes: "", completed: false },
-            { id: 7, task: "Document editorial workflows for coverage", category: "PEOPLE", horizon: "Now", confidence: 80, notes: "", completed: false },
-            { id: 8, task: "Define Jasper's autonomy and default actions", category: "PEOPLE", horizon: "Now", confidence: 80, notes: "", completed: false },
-            { id: 9, task: "Hire new editor", category: "PEOPLE", horizon: "Now", confidence: 75, notes: "", completed: false },
-            { id: 10, task: "Onboard new editor", category: "PEOPLE", horizon: "Now", confidence: 70, notes: "", completed: false },
-
-            // STATECRAFT
-            { id: 11, task: "Bank episodes for weekly release during absence", category: "STATECRAFT", horizon: "Now", confidence: 95, notes: "", completed: false },
-            { id: 12, task: "Schedule / record episodes needed for banking", category: "STATECRAFT", horizon: "Now", confidence: 85, notes: "", completed: false },
-            { id: 13, task: "Plan episode targets for Q2 and Q3", category: "STATECRAFT", horizon: "Now", confidence: 80, notes: "", completed: false },
-            { id: 14, task: "Kick off guest outreach for Q2 / Q3", category: "STATECRAFT", horizon: "Now", confidence: 75, notes: "", completed: false },
-            { id: 15, task: "Identify deep-dive / flagship episodes", category: "STATECRAFT", horizon: "Now", confidence: 70, notes: "", completed: false },
-            { id: 16, task: "Plan video expansion for late Q2", category: "STATECRAFT", horizon: "After Leave", confidence: 85, notes: "", completed: false },
-
-            // FINANCE
-            { id: 17, task: "Confirm account is HSA or FSA", category: "FINANCE", horizon: "Now", confidence: 95, notes: "", completed: false },
-            { id: 18, task: "Finalize annual budget", category: "FINANCE", horizon: "Now", confidence: 90, notes: "", completed: false },
-            { id: 19, task: "Plan eligible usage for baby expenses", category: "FINANCE", horizon: "Now", confidence: 85, notes: "", completed: false },
-            { id: 20, task: "Build budget tracking system (MVP)", category: "FINANCE", horizon: "Now", confidence: 75, notes: "", completed: false },
-
-            // HOUSEHOLD
-            { id: 21, task: "Take down Christmas decorations", category: "HOUSEHOLD", horizon: "Now", confidence: 99, notes: "", completed: false },
-            { id: 22, task: "Design plan for shared kids' room", category: "HOUSEHOLD", horizon: "Now", confidence: 90, notes: "", completed: false },
-            { id: 23, task: "Add bookshelves in main room", category: "HOUSEHOLD", horizon: "Now", confidence: 85, notes: "", completed: false },
-            { id: 24, task: "Install IKEA cabinet in bedroom", category: "HOUSEHOLD", horizon: "Now", confidence: 85, notes: "", completed: false },
-            { id: 25, task: "Replace kitchen light", category: "HOUSEHOLD", horizon: "Now", confidence: 80, notes: "", completed: false },
-            { id: 26, task: "Decide keep/store/discard plan for closets", category: "HOUSEHOLD", horizon: "Now", confidence: 75, notes: "", completed: false },
-            { id: 27, task: "Add wallpaper/contact paper to refrigerator", category: "HOUSEHOLD", horizon: "Now", confidence: 70, notes: "", completed: false },
-            { id: 28, task: "Execute closet reorganization", category: "HOUSEHOLD", horizon: "On Leave", confidence: 60, notes: "", completed: false },
-            { id: 29, task: "Implement kids' room changes", category: "HOUSEHOLD", horizon: "After Leave", confidence: 60, notes: "", completed: false },
-
-            // PERSONAL ADMIN
-            { id: 30, task: "Buy new slacks", category: "PERSONAL ADMIN", horizon: "Now", confidence: 65, notes: "", completed: false },
-            { id: 31, task: "Clothing purge", category: "PERSONAL ADMIN", horizon: "On Leave", confidence: 65, notes: "", completed: false },
-            { id: 32, task: "Use gift card for clothing", category: "PERSONAL ADMIN", horizon: "On Leave", confidence: 55, notes: "", completed: false },
-
-            // PERSONAL TECH
-            { id: 33, task: "Buy domain and host personal site", category: "PERSONAL TECH", horizon: "Now", confidence: 85, notes: "", completed: false },
-            { id: 34, task: "Build food ordering / meal planning system", category: "PERSONAL TECH", horizon: "After Leave", confidence: 70, notes: "", completed: false },
-            { id: 35, task: "Sort and process Twitter bookmarks", category: "PERSONAL TECH", horizon: "After Leave", confidence: 60, notes: "", completed: false },
-
-            // FAMILY DECISIONS
-            { id: 36, task: "Choose baby name", category: "FAMILY DECISIONS", horizon: "Now", confidence: 95, notes: "", completed: false },
-            { id: 37, task: "Decide summer travel (weddings)", category: "FAMILY DECISIONS", horizon: "Now", confidence: 85, notes: "", completed: false },
-
-            // HEALTH
-            { id: 38, task: "Collect PT records and knee assessment", category: "HEALTH", horizon: "Now", confidence: 80, notes: "", completed: false },
-
-            // PERSONAL / CREATIVE GOALS
-            { id: 39, task: "Think seriously about writing a book", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", confidence: 70, notes: "", completed: false },
-            { id: 40, task: "Reading (25-30 books target)", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", confidence: 55, notes: "", completed: false },
-            { id: 41, task: "Reach 2300 blitz chess rating", category: "PERSONAL / CREATIVE GOALS", horizon: "After Leave", confidence: 60, notes: "", completed: false },
+        // ================================================
+        // Constants
+        // ================================================
+        const CATEGORIES = [
+            'PEOPLE', 'STATECRAFT', 'FINANCE', 'HOUSEHOLD',
+            'PERSONAL', 'HEALTH', 'PERSONAL / CREATIVE GOALS',
+            'RAFA', 'NIC'
         ];
 
+        const HORIZONS = ['Now', 'On Leave', 'After Leave'];
+
+        const CATEGORY_MIGRATION = {
+            'PERSONAL ADMIN': 'PERSONAL',
+            'PERSONAL TECH': 'PERSONAL',
+            'FAMILY DECISIONS': 'HOUSEHOLD',
+        };
+
+        const CATEGORY_CLASS_MAP = {
+            'PEOPLE': 'cat-people',
+            'STATECRAFT': 'cat-statecraft',
+            'FINANCE': 'cat-finance',
+            'HOUSEHOLD': 'cat-household',
+            'PERSONAL': 'cat-personal',
+            'HEALTH': 'cat-health',
+            'PERSONAL / CREATIVE GOALS': 'cat-personal-creative-goals',
+            'RAFA': 'cat-rafa',
+            'NIC': 'cat-nic',
+        };
+
+        // ================================================
+        // Initial Data
+        // ================================================
+        const initialTasks = [
+            { id: 1, task: "Design performance tracking system for Beez", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 1 },
+            { id: 2, task: "Define promotion / raise criteria for Beez", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 2 },
+            { id: 3, task: "Define Rita's editorial authority and responsibilities", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 3 },
+            { id: 4, task: "Define Jasper's IFP work scope", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 4 },
+            { id: 5, task: "Set tracking cadence and artifacts for Beez", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 5 },
+            { id: 6, task: "Define Jasper's personal-life work scope", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 6 },
+            { id: 7, task: "Document editorial workflows for coverage", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 7 },
+            { id: 8, task: "Define Jasper's autonomy and default actions", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 8 },
+            { id: 9, task: "Hire new editor", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 9 },
+            { id: 10, task: "Onboard new editor", category: "PEOPLE", horizon: "Now", notes: "", completed: false, priority: 10 },
+            { id: 11, task: "Bank episodes for weekly release during absence", category: "STATECRAFT", horizon: "Now", notes: "", completed: false, priority: 11 },
+            { id: 12, task: "Schedule / record episodes needed for banking", category: "STATECRAFT", horizon: "Now", notes: "", completed: false, priority: 12 },
+            { id: 13, task: "Plan episode targets for Q2 and Q3", category: "STATECRAFT", horizon: "Now", notes: "", completed: false, priority: 13 },
+            { id: 14, task: "Kick off guest outreach for Q2 / Q3", category: "STATECRAFT", horizon: "Now", notes: "", completed: false, priority: 14 },
+            { id: 15, task: "Identify deep-dive / flagship episodes", category: "STATECRAFT", horizon: "Now", notes: "", completed: false, priority: 15 },
+            { id: 16, task: "Plan video expansion for late Q2", category: "STATECRAFT", horizon: "After Leave", notes: "", completed: false, priority: 1 },
+            { id: 17, task: "Confirm account is HSA or FSA", category: "FINANCE", horizon: "Now", notes: "", completed: false, priority: 16 },
+            { id: 18, task: "Finalize annual budget", category: "FINANCE", horizon: "Now", notes: "", completed: false, priority: 17 },
+            { id: 19, task: "Plan eligible usage for baby expenses", category: "FINANCE", horizon: "Now", notes: "", completed: false, priority: 18 },
+            { id: 20, task: "Build budget tracking system (MVP)", category: "FINANCE", horizon: "Now", notes: "", completed: false, priority: 19 },
+            { id: 21, task: "Take down Christmas decorations", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 20 },
+            { id: 22, task: "Design plan for shared kids' room", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 21 },
+            { id: 23, task: "Add bookshelves in main room", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 22 },
+            { id: 24, task: "Install IKEA cabinet in bedroom", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 23 },
+            { id: 25, task: "Replace kitchen light", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 24 },
+            { id: 26, task: "Decide keep/store/discard plan for closets", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 25 },
+            { id: 27, task: "Add wallpaper/contact paper to refrigerator", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 26 },
+            { id: 28, task: "Execute closet reorganization", category: "HOUSEHOLD", horizon: "On Leave", notes: "", completed: false, priority: 1 },
+            { id: 29, task: "Implement kids' room changes", category: "HOUSEHOLD", horizon: "After Leave", notes: "", completed: false, priority: 2 },
+            { id: 30, task: "Buy new slacks", category: "PERSONAL", horizon: "Now", notes: "", completed: false, priority: 27 },
+            { id: 31, task: "Clothing purge", category: "PERSONAL", horizon: "On Leave", notes: "", completed: false, priority: 2 },
+            { id: 32, task: "Use gift card for clothing", category: "PERSONAL", horizon: "On Leave", notes: "", completed: false, priority: 3 },
+            { id: 33, task: "Buy domain and host personal site", category: "PERSONAL", horizon: "Now", notes: "", completed: false, priority: 28 },
+            { id: 34, task: "Build food ordering / meal planning system", category: "PERSONAL", horizon: "After Leave", notes: "", completed: false, priority: 3 },
+            { id: 35, task: "Sort and process Twitter bookmarks", category: "PERSONAL", horizon: "After Leave", notes: "", completed: false, priority: 4 },
+            { id: 36, task: "Choose baby name", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 29 },
+            { id: 37, task: "Decide summer travel (weddings)", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false, priority: 30 },
+            { id: 38, task: "Collect PT records and knee assessment", category: "HEALTH", horizon: "Now", notes: "", completed: false, priority: 31 },
+            { id: 39, task: "Think seriously about writing a book", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", notes: "", completed: false, priority: 4 },
+            { id: 40, task: "Reading (25-30 books target)", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", notes: "", completed: false, priority: 5 },
+            { id: 41, task: "Reach 2300 blitz chess rating", category: "PERSONAL / CREATIVE GOALS", horizon: "After Leave", notes: "", completed: false, priority: 5 },
+        ];
+
+        // ================================================
         // State
+        // ================================================
         let tasks = [];
+        let activeFilter = 'ALL';
         let showCompleted = false;
         let expandedNotes = new Set();
+        let notepadText = '';
+        let apiKey = '';
 
-        // Initialize
+        // Drag state
+        let dragState = null;
+
+        // ================================================
+        // Initialization
+        // ================================================
         function init() {
-            const saved = localStorage.getItem('maternity-tasks');
+            const saved = localStorage.getItem('maternity-tasks-v2');
             if (saved) {
                 tasks = JSON.parse(saved);
+                tasks = migrateTasks(tasks);
             } else {
-                tasks = initialTasks;
-                saveTasks();
+                // Check for v1 data
+                const v1 = localStorage.getItem('maternity-tasks');
+                if (v1) {
+                    tasks = JSON.parse(v1);
+                    tasks = migrateTasks(tasks);
+                } else {
+                    tasks = JSON.parse(JSON.stringify(initialTasks));
+                }
             }
+            assignPriorities();
+            saveTasks();
+
+            notepadText = localStorage.getItem('maternity-notepad') || '';
+            document.getElementById('notepad-textarea').value = notepadText;
+
+            apiKey = localStorage.getItem('maternity-apikey') || '';
+
+            renderFilterBar();
             render();
+            initDragAndDrop();
+            initColumnDots();
         }
 
-        // Save to localStorage
+        function migrateTasks(taskList) {
+            return taskList.map(t => {
+                const migrated = { ...t };
+                if (CATEGORY_MIGRATION[migrated.category]) {
+                    migrated.category = CATEGORY_MIGRATION[migrated.category];
+                }
+                delete migrated.confidence;
+                if (migrated.priority === undefined) {
+                    migrated.priority = 999;
+                }
+                return migrated;
+            });
+        }
+
+        function assignPriorities() {
+            HORIZONS.forEach(horizon => {
+                const horizonTasks = tasks
+                    .filter(t => t.horizon === horizon && !t.completed)
+                    .sort((a, b) => (a.priority || 999) - (b.priority || 999));
+                horizonTasks.forEach((t, i) => { t.priority = i + 1; });
+            });
+        }
+
+        // ================================================
+        // Persistence
+        // ================================================
         function saveTasks() {
-            localStorage.setItem('maternity-tasks', JSON.stringify(tasks));
+            localStorage.setItem('maternity-tasks-v2', JSON.stringify(tasks));
         }
 
-        // Get next ID
+        function saveNotepad() {
+            notepadText = document.getElementById('notepad-textarea').value;
+            localStorage.setItem('maternity-notepad', notepadText);
+        }
+
+        // ================================================
+        // Rendering
+        // ================================================
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text || '';
+            return div.innerHTML;
+        }
+
+        function getCategoryClass(category) {
+            return CATEGORY_CLASS_MAP[category] || '';
+        }
+
         function getNextId() {
             return Math.max(0, ...tasks.map(t => t.id)) + 1;
         }
 
-        // Get category class
-        function getCategoryClass(category) {
-            const map = {
-                'PEOPLE': 'cat-people',
-                'STATECRAFT': 'cat-statecraft',
-                'FINANCE': 'cat-finance',
-                'HOUSEHOLD': 'cat-household',
-                'PERSONAL ADMIN': 'cat-personal-admin',
-                'PERSONAL TECH': 'cat-personal-tech',
-                'FAMILY DECISIONS': 'cat-family-decisions',
-                'HEALTH': 'cat-health',
-                'PERSONAL / CREATIVE GOALS': 'cat-personal-creative-goals'
-            };
-            return map[category] || '';
+        function renderFilterBar() {
+            const bar = document.getElementById('filter-bar');
+            const pills = ['ALL', ...CATEGORIES];
+            bar.innerHTML = pills.map(cat => {
+                const label = cat === 'ALL' ? 'All' : cat.charAt(0) + cat.slice(1).toLowerCase();
+                const active = activeFilter === cat ? ' active' : '';
+                return `<button class="filter-pill${active}" onclick="setFilter('${cat}')">${escapeHtml(label)}</button>`;
+            }).join('');
         }
 
-        // Render task item
-        function renderTask(task) {
+        function setFilter(cat) {
+            activeFilter = cat;
+            renderFilterBar();
+            render();
+        }
+
+        function renderTask(task, displayNum) {
             const isExpanded = expandedNotes.has(task.id);
             return `
-                <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
+                <div class="task-card ${task.completed ? 'completed' : ''}" data-id="${task.id}" data-horizon="${task.horizon}">
                     <div class="task-header">
+                        <span class="task-priority">${displayNum}</span>
                         <input type="checkbox" class="task-checkbox"
                             ${task.completed ? 'checked' : ''}
                             onchange="toggleComplete(${task.id})">
@@ -675,23 +984,20 @@
                             <div class="task-name">${escapeHtml(task.task)}</div>
                             <div class="task-meta">
                                 <span class="task-category ${getCategoryClass(task.category)}">${escapeHtml(task.category)}</span>
-                                ${task.confidence ? `<span class="task-confidence">${task.confidence}%</span>` : ''}
                             </div>
                         </div>
                         <div class="task-actions">
-                            <button class="task-action-btn" onclick="toggleNotes(${task.id})" title="Notes">
-                                ${task.notes ? '📝' : '📋'}
-                            </button>
-                            <button class="task-action-btn" onclick="openEditModal(${task.id})" title="Edit">✏️</button>
+                            <button class="task-action-btn" onclick="toggleNotes(${task.id})" title="Notes">${task.notes ? '\u{1F4DD}' : '\u{1F4CB}'}</button>
+                            <button class="task-action-btn" onclick="openEditModal(${task.id})" title="Edit">\u{270F}\u{FE0F}</button>
                             <div class="move-menu">
-                                <button class="task-action-btn" onclick="toggleMoveMenu(event, ${task.id})" title="Move">↔️</button>
+                                <button class="task-action-btn" onclick="toggleMoveMenu(event, ${task.id})" title="Move">\u{2194}\u{FE0F}</button>
                                 <div class="move-dropdown" id="move-menu-${task.id}">
-                                    <div class="move-option" onclick="moveTask(${task.id}, 'Now')">→ Now (Before Leave)</div>
-                                    <div class="move-option" onclick="moveTask(${task.id}, 'On Leave')">→ On Leave</div>
-                                    <div class="move-option" onclick="moveTask(${task.id}, 'After Leave')">→ After Leave</div>
+                                    <div class="move-option" onclick="moveTask(${task.id}, 'Now')">\u{2192} Now</div>
+                                    <div class="move-option" onclick="moveTask(${task.id}, 'On Leave')">\u{2192} On Leave</div>
+                                    <div class="move-option" onclick="moveTask(${task.id}, 'After Leave')">\u{2192} After Leave</div>
                                 </div>
                             </div>
-                            <button class="task-action-btn" onclick="deleteTask(${task.id})" title="Delete">🗑️</button>
+                            <button class="task-action-btn" onclick="deleteTask(${task.id})" title="Delete">\u{1F5D1}\u{FE0F}</button>
                         </div>
                     </div>
                     ${isExpanded ? `
@@ -699,6 +1005,7 @@
                             ${task.notes ? `<div class="task-notes-text">${escapeHtml(task.notes)}</div>` : ''}
                             <textarea class="task-notes-input"
                                 placeholder="Add notes..."
+                                oninput="event.stopPropagation()"
                                 onblur="saveNotes(${task.id}, this.value)">${escapeHtml(task.notes || '')}</textarea>
                         </div>
                     ` : ''}
@@ -706,117 +1013,553 @@
             `;
         }
 
-        // Escape HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Render all
         function render() {
-            const horizons = ['Now', 'On Leave', 'After Leave'];
-            const listIds = ['list-now', 'list-on-leave', 'list-after-leave'];
-            const countIds = ['count-now', 'count-on-leave', 'count-after-leave'];
+            const listIds = { 'Now': 'list-now', 'On Leave': 'list-on-leave', 'After Leave': 'list-after-leave' };
+            const countIds = { 'Now': 'count-now', 'On Leave': 'count-on-leave', 'After Leave': 'count-after-leave' };
 
-            horizons.forEach((horizon, index) => {
-                const filtered = tasks.filter(t => t.horizon === horizon && !t.completed);
-                const sorted = filtered.sort((a, b) => (b.confidence || 0) - (a.confidence || 0));
+            HORIZONS.forEach(horizon => {
+                let filtered = tasks.filter(t => t.horizon === horizon && !t.completed);
+                if (activeFilter !== 'ALL') {
+                    filtered = filtered.filter(t => t.category === activeFilter);
+                }
+                const sorted = filtered.sort((a, b) => a.priority - b.priority);
 
-                document.getElementById(listIds[index]).innerHTML = sorted.length
-                    ? sorted.map(renderTask).join('')
+                const listEl = document.getElementById(listIds[horizon]);
+                listEl.innerHTML = sorted.length
+                    ? sorted.map((t, i) => renderTask(t, i + 1)).join('')
                     : '<div class="empty-state">No tasks</div>';
-                document.getElementById(countIds[index]).textContent = sorted.length;
+
+                // Show total count (unfiltered) in the count badge
+                const totalInHorizon = tasks.filter(t => t.horizon === horizon && !t.completed).length;
+                document.getElementById(countIds[horizon]).textContent = totalInHorizon;
             });
 
             // Completed
-            const completed = tasks.filter(t => t.completed);
+            let completed = tasks.filter(t => t.completed);
+            if (activeFilter !== 'ALL') {
+                completed = completed.filter(t => t.category === activeFilter);
+            }
             document.getElementById('list-completed').innerHTML = completed.length
-                ? completed.map(renderTask).join('')
+                ? completed.map((t, i) => renderTask(t, i + 1)).join('')
                 : '<div class="empty-state">No completed tasks</div>';
-            document.getElementById('count-completed').textContent = completed.length;
+            document.getElementById('count-completed').textContent = tasks.filter(t => t.completed).length;
 
             // Stats
             const total = tasks.length;
-            const completedCount = completed.length;
+            const completedCount = tasks.filter(t => t.completed).length;
             document.getElementById('stat-total').textContent = total;
             document.getElementById('stat-completed').textContent = completedCount;
             document.getElementById('stat-remaining').textContent = total - completedCount;
         }
 
-        // Toggle complete
+        // ================================================
+        // Task CRUD
+        // ================================================
         function toggleComplete(id) {
             const task = tasks.find(t => t.id === id);
             if (task) {
                 task.completed = !task.completed;
+                if (!task.completed) {
+                    // Re-entering a horizon, put at end
+                    const maxP = Math.max(0, ...tasks.filter(t => t.horizon === task.horizon && !t.completed && t.id !== id).map(t => t.priority));
+                    task.priority = maxP + 1;
+                }
                 saveTasks();
                 render();
             }
         }
 
-        // Toggle notes
         function toggleNotes(id) {
-            if (expandedNotes.has(id)) {
-                expandedNotes.delete(id);
-            } else {
-                expandedNotes.add(id);
-            }
+            if (expandedNotes.has(id)) expandedNotes.delete(id);
+            else expandedNotes.add(id);
             render();
         }
 
-        // Save notes
         function saveNotes(id, notes) {
             const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.notes = notes;
-                saveTasks();
-            }
+            if (task) { task.notes = notes; saveTasks(); }
         }
 
-        // Move task
         function moveTask(id, horizon) {
             const task = tasks.find(t => t.id === id);
             if (task) {
+                const oldHorizon = task.horizon;
                 task.horizon = horizon;
                 task.completed = false;
+                const maxP = Math.max(0, ...tasks.filter(t => t.horizon === horizon && !t.completed && t.id !== id).map(t => t.priority));
+                task.priority = maxP + 1;
+                renumberPriorities(horizon);
+                if (oldHorizon !== horizon) renumberPriorities(oldHorizon);
                 saveTasks();
                 render();
             }
             closeAllMenus();
         }
 
-        // Delete task
         function deleteTask(id) {
             if (confirm('Delete this task?')) {
+                const task = tasks.find(t => t.id === id);
+                const horizon = task ? task.horizon : null;
                 tasks = tasks.filter(t => t.id !== id);
+                if (horizon) renumberPriorities(horizon);
                 saveTasks();
                 render();
             }
         }
 
-        // Toggle move menu
         function toggleMoveMenu(event, id) {
             event.stopPropagation();
             closeAllMenus();
             const menu = document.getElementById(`move-menu-${id}`);
-            if (menu) {
-                menu.classList.toggle('show');
-            }
+            if (menu) menu.classList.toggle('show');
         }
 
-        // Close all menus
         function closeAllMenus() {
             document.querySelectorAll('.move-dropdown').forEach(m => m.classList.remove('show'));
         }
 
-        // Toggle completed column
         function toggleCompleted() {
             showCompleted = !showCompleted;
             document.getElementById('completed-column').style.display = showCompleted ? 'block' : 'none';
             document.getElementById('toggle-completed-text').textContent = showCompleted ? 'Hide Completed' : 'Show Completed';
         }
 
-        // Open add modal
+        // ================================================
+        // Priority / Reorder
+        // ================================================
+        function renumberPriorities(horizon) {
+            const horizonTasks = tasks
+                .filter(t => t.horizon === horizon && !t.completed)
+                .sort((a, b) => a.priority - b.priority);
+            horizonTasks.forEach((t, i) => { t.priority = i + 1; });
+        }
+
+        function reorderTask(taskId, targetHorizon, insertBeforeId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const oldHorizon = task.horizon;
+            task.horizon = targetHorizon;
+            task.completed = false;
+
+            const horizonTasks = tasks
+                .filter(t => t.horizon === targetHorizon && !t.completed && t.id !== taskId)
+                .sort((a, b) => a.priority - b.priority);
+
+            if (insertBeforeId !== null && insertBeforeId !== undefined) {
+                const idx = horizonTasks.findIndex(t => t.id === insertBeforeId);
+                if (idx >= 0) {
+                    horizonTasks.splice(idx, 0, task);
+                } else {
+                    horizonTasks.push(task);
+                }
+            } else {
+                horizonTasks.push(task);
+            }
+
+            horizonTasks.forEach((t, i) => { t.priority = i + 1; });
+            if (oldHorizon !== targetHorizon) renumberPriorities(oldHorizon);
+            saveTasks();
+            render();
+        }
+
+        // ================================================
+        // Drag & Drop
+        // ================================================
+        function initDragAndDrop() {
+            const container = document.getElementById('columns-container');
+
+            // --- Desktop: mouse events ---
+            container.addEventListener('mousedown', (e) => {
+                const card = e.target.closest('.task-card');
+                if (!card) return;
+                if (e.target.closest('.task-actions, button, input, select, textarea, a, .task-checkbox')) return;
+
+                const startX = e.clientX;
+                const startY = e.clientY;
+                let started = false;
+                const taskId = parseInt(card.dataset.id);
+
+                function onMove(ev) {
+                    const dx = Math.abs(ev.clientX - startX);
+                    const dy = Math.abs(ev.clientY - startY);
+                    if (!started && (dx > 5 || dy > 5)) {
+                        started = true;
+                        startDrag(card, taskId, ev.clientX, ev.clientY);
+                    }
+                    if (started) updateDrag(ev.clientX, ev.clientY);
+                }
+                function onUp() {
+                    document.removeEventListener('mousemove', onMove);
+                    document.removeEventListener('mouseup', onUp);
+                    if (started) endDrag();
+                }
+                document.addEventListener('mousemove', onMove);
+                document.addEventListener('mouseup', onUp);
+            });
+
+            // --- Mobile: touch events with long-press ---
+            let holdTimer = null;
+            let touchStart = null;
+
+            container.addEventListener('touchstart', (e) => {
+                const card = e.target.closest('.task-card');
+                if (!card) return;
+                if (e.target.closest('.task-actions, button, input, select, textarea, a, .task-checkbox')) return;
+
+                const touch = e.touches[0];
+                touchStart = { x: touch.clientX, y: touch.clientY };
+                const taskId = parseInt(card.dataset.id);
+
+                holdTimer = setTimeout(() => {
+                    if (navigator.vibrate) navigator.vibrate(40);
+                    startDrag(card, taskId, touch.clientX, touch.clientY);
+                }, 400);
+            }, { passive: true });
+
+            container.addEventListener('touchmove', (e) => {
+                if (!touchStart) return;
+                const touch = e.touches[0];
+                const dx = Math.abs(touch.clientX - touchStart.x);
+                const dy = Math.abs(touch.clientY - touchStart.y);
+
+                if (holdTimer && (dx > 8 || dy > 8)) {
+                    clearTimeout(holdTimer);
+                    holdTimer = null;
+                }
+
+                if (dragState && dragState.active) {
+                    e.preventDefault();
+                    updateDrag(touch.clientX, touch.clientY);
+                }
+            }, { passive: false });
+
+            document.addEventListener('touchend', () => {
+                if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+                touchStart = null;
+                if (dragState && dragState.active) endDrag();
+            });
+
+            document.addEventListener('touchcancel', () => {
+                if (holdTimer) { clearTimeout(holdTimer); holdTimer = null; }
+                touchStart = null;
+                if (dragState && dragState.active) cancelDrag();
+            });
+        }
+
+        function startDrag(cardEl, taskId, x, y) {
+            const rect = cardEl.getBoundingClientRect();
+            const ghost = cardEl.cloneNode(true);
+            ghost.classList.add('drag-ghost');
+            ghost.style.width = rect.width + 'px';
+            ghost.style.left = rect.left + 'px';
+            ghost.style.top = rect.top + 'px';
+            document.body.appendChild(ghost);
+
+            cardEl.classList.add('dragging');
+
+            const container = document.getElementById('columns-container');
+            container.style.scrollSnapType = 'none';
+
+            dragState = {
+                active: true,
+                taskId,
+                ghost,
+                originalCard: cardEl,
+                sourceHorizon: tasks.find(t => t.id === taskId)?.horizon,
+                targetHorizon: null,
+                insertBeforeId: null,
+                offsetX: x - rect.left,
+                offsetY: y - rect.top,
+                autoScrollTimer: null,
+            };
+        }
+
+        function updateDrag(x, y) {
+            if (!dragState || !dragState.active) return;
+
+            dragState.ghost.style.left = (x - dragState.offsetX) + 'px';
+            dragState.ghost.style.top = (y - dragState.offsetY) + 'px';
+
+            // Clear previous indicators
+            document.querySelectorAll('.task-card.drag-over-above, .task-card.drag-over-below').forEach(c => {
+                c.classList.remove('drag-over-above', 'drag-over-below');
+            });
+
+            // Detect target column
+            const columns = document.querySelectorAll('.horizon-column:not(#completed-column)');
+            let targetCol = null;
+            columns.forEach(col => {
+                const r = col.getBoundingClientRect();
+                col.classList.remove('drop-target');
+                if (x >= r.left && x <= r.right) {
+                    targetCol = col;
+                }
+            });
+
+            if (targetCol) {
+                targetCol.classList.add('drop-target');
+                dragState.targetHorizon = targetCol.dataset.horizon;
+
+                // Find insertion position
+                const cards = targetCol.querySelectorAll('.task-card:not(.dragging)');
+                let insertBeforeId = null;
+                let lastCard = null;
+                for (const card of cards) {
+                    const r = card.getBoundingClientRect();
+                    const midY = r.top + r.height / 2;
+                    if (y < midY) {
+                        insertBeforeId = parseInt(card.dataset.id);
+                        card.classList.add('drag-over-above');
+                        break;
+                    }
+                    lastCard = card;
+                }
+                if (insertBeforeId === null && lastCard) {
+                    lastCard.classList.add('drag-over-below');
+                }
+                dragState.insertBeforeId = insertBeforeId;
+            } else {
+                dragState.targetHorizon = dragState.sourceHorizon;
+                dragState.insertBeforeId = null;
+            }
+
+            // Auto-scroll the columns container on mobile
+            const container = document.getElementById('columns-container');
+            const cr = container.getBoundingClientRect();
+            const edge = 50;
+
+            if (dragState.autoScrollTimer) {
+                cancelAnimationFrame(dragState.autoScrollTimer);
+                dragState.autoScrollTimer = null;
+            }
+
+            if (x < cr.left + edge) {
+                (function scroll() {
+                    container.scrollLeft -= 6;
+                    if (dragState && dragState.active) {
+                        dragState.autoScrollTimer = requestAnimationFrame(scroll);
+                    }
+                })();
+            } else if (x > cr.right - edge) {
+                (function scroll() {
+                    container.scrollLeft += 6;
+                    if (dragState && dragState.active) {
+                        dragState.autoScrollTimer = requestAnimationFrame(scroll);
+                    }
+                })();
+            }
+        }
+
+        function endDrag() {
+            if (!dragState || !dragState.active) return;
+
+            if (dragState.autoScrollTimer) cancelAnimationFrame(dragState.autoScrollTimer);
+
+            const targetHorizon = dragState.targetHorizon || dragState.sourceHorizon;
+            reorderTask(dragState.taskId, targetHorizon, dragState.insertBeforeId);
+
+            cleanup();
+        }
+
+        function cancelDrag() {
+            if (!dragState) return;
+            if (dragState.autoScrollTimer) cancelAnimationFrame(dragState.autoScrollTimer);
+            cleanup();
+            render();
+        }
+
+        function cleanup() {
+            if (!dragState) return;
+            if (dragState.ghost) dragState.ghost.remove();
+            document.querySelectorAll('.task-card.dragging').forEach(c => c.classList.remove('dragging'));
+            document.querySelectorAll('.horizon-column.drop-target').forEach(c => c.classList.remove('drop-target'));
+            document.querySelectorAll('.task-card.drag-over-above, .task-card.drag-over-below').forEach(c => {
+                c.classList.remove('drag-over-above', 'drag-over-below');
+            });
+            const container = document.getElementById('columns-container');
+            container.style.scrollSnapType = '';
+            dragState = null;
+        }
+
+        // ================================================
+        // Column dots (mobile navigation indicator)
+        // ================================================
+        function initColumnDots() {
+            const container = document.getElementById('columns-container');
+            const dots = document.querySelectorAll('.column-dot');
+
+            dots.forEach(dot => {
+                dot.addEventListener('click', () => {
+                    const colIdx = parseInt(dot.dataset.col);
+                    const cols = container.querySelectorAll('.horizon-column:not(#completed-column)');
+                    if (cols[colIdx]) {
+                        cols[colIdx].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+                    }
+                });
+            });
+
+            container.addEventListener('scroll', () => {
+                const cols = container.querySelectorAll('.horizon-column:not(#completed-column)');
+                const scrollLeft = container.scrollLeft;
+                const colWidth = cols[0]?.offsetWidth || 1;
+                const activeIdx = Math.round(scrollLeft / (colWidth + 12));
+                dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+            });
+        }
+
+        // ================================================
+        // Notepad & AI
+        // ================================================
+        function toggleNotepad() {
+            const panel = document.getElementById('notepad-panel');
+            panel.classList.toggle('show');
+        }
+
+        document.getElementById('notepad-textarea').addEventListener('input', saveNotepad);
+
+        function closeApiKeyModal() {
+            document.getElementById('apikey-modal').classList.remove('show');
+        }
+
+        function saveApiKey() {
+            const key = document.getElementById('api-key-input').value.trim();
+            if (key) {
+                apiKey = key;
+                localStorage.setItem('maternity-apikey', apiKey);
+                closeApiKeyModal();
+                categorizeWithAI();
+            }
+        }
+
+        async function categorizeWithAI() {
+            const text = document.getElementById('notepad-textarea').value.trim();
+            if (!text) {
+                setAiStatus('Notepad is empty.');
+                return;
+            }
+
+            if (!apiKey) {
+                document.getElementById('apikey-modal').classList.add('show');
+                return;
+            }
+
+            setAiStatus('Thinking...');
+
+            const categories = CATEGORIES.join(', ');
+            const horizons = HORIZONS.join(', ');
+            const prompt = `You are a task categorization assistant. Given the following freeform notes, extract individual tasks and categorize them.
+
+Available categories (use UPPERCASE exactly as listed): ${categories}
+Available horizons: ${horizons}
+
+Existing tasks for context:
+${tasks.filter(t => !t.completed).map(t => `- [${t.category}] [${t.horizon}] ${t.task}`).join('\n')}
+
+Notes to categorize:
+---
+${text}
+---
+
+Return ONLY a valid JSON array. Each item should have:
+- "task": string (concise task description)
+- "category": string (one of the categories above, UPPERCASE)
+- "horizon": string (one of: "Now", "On Leave", "After Leave")
+
+Return ONLY the JSON array, no markdown fencing, no explanation.`;
+
+            try {
+                const resp = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01',
+                        'anthropic-dangerous-direct-browser-access': 'true',
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-5-20250929',
+                        max_tokens: 4096,
+                        messages: [{ role: 'user', content: prompt }],
+                    }),
+                });
+
+                if (!resp.ok) {
+                    const err = await resp.text();
+                    if (resp.status === 401) {
+                        setAiStatus('Invalid API key. Click Notepad to re-enter.');
+                        apiKey = '';
+                        localStorage.removeItem('maternity-apikey');
+                    } else {
+                        setAiStatus('API error: ' + resp.status);
+                    }
+                    console.error('AI error:', err);
+                    return;
+                }
+
+                const data = await resp.json();
+                const content = data.content?.[0]?.text || '';
+
+                // Parse JSON — try to extract array from response
+                let newTasks;
+                try {
+                    // Try direct parse first
+                    newTasks = JSON.parse(content);
+                } catch {
+                    // Try extracting JSON from markdown code block
+                    const match = content.match(/\[[\s\S]*\]/);
+                    if (match) {
+                        newTasks = JSON.parse(match[0]);
+                    } else {
+                        throw new Error('Could not parse AI response');
+                    }
+                }
+
+                if (!Array.isArray(newTasks) || newTasks.length === 0) {
+                    setAiStatus('No tasks found in notes.');
+                    return;
+                }
+
+                // Add tasks
+                let added = 0;
+                newTasks.forEach(nt => {
+                    if (!nt.task) return;
+                    const category = CATEGORIES.includes(nt.category) ? nt.category : 'PERSONAL';
+                    const horizon = HORIZONS.includes(nt.horizon) ? nt.horizon : 'Now';
+                    const maxP = Math.max(0, ...tasks.filter(t => t.horizon === horizon && !t.completed).map(t => t.priority));
+                    tasks.push({
+                        id: getNextId(),
+                        task: nt.task,
+                        category,
+                        horizon,
+                        notes: '',
+                        completed: false,
+                        priority: maxP + 1,
+                    });
+                    added++;
+                });
+
+                saveTasks();
+                render();
+                setAiStatus(`Added ${added} task${added !== 1 ? 's' : ''}!`);
+
+            } catch (err) {
+                console.error('AI categorization error:', err);
+                setAiStatus('Error: ' + err.message);
+            }
+        }
+
+        function setAiStatus(msg) {
+            document.getElementById('ai-status').textContent = msg;
+            if (msg) setTimeout(() => {
+                const el = document.getElementById('ai-status');
+                if (el.textContent === msg) el.textContent = '';
+            }, 6000);
+        }
+
+        // ================================================
+        // Modal
+        // ================================================
         function openAddModal() {
             document.getElementById('modal-title').textContent = 'Add New Task';
             document.getElementById('task-id').value = '';
@@ -824,51 +1567,53 @@
             document.getElementById('modal-overlay').classList.add('show');
         }
 
-        // Open edit modal
         function openEditModal(id) {
             const task = tasks.find(t => t.id === id);
             if (!task) return;
-
             document.getElementById('modal-title').textContent = 'Edit Task';
             document.getElementById('task-id').value = id;
             document.getElementById('task-name').value = task.task;
             document.getElementById('task-category').value = task.category;
             document.getElementById('task-horizon').value = task.horizon;
-            document.getElementById('task-confidence').value = task.confidence || '';
             document.getElementById('task-notes-field').value = task.notes || '';
             document.getElementById('modal-overlay').classList.add('show');
         }
 
-        // Close modal
         function closeModal() {
             document.getElementById('modal-overlay').classList.remove('show');
         }
 
-        // Save task
-        function saveTask(event) {
+        function saveTaskFromModal(event) {
             event.preventDefault();
-
             const id = document.getElementById('task-id').value;
             const taskData = {
                 task: document.getElementById('task-name').value,
                 category: document.getElementById('task-category').value,
                 horizon: document.getElementById('task-horizon').value,
-                confidence: parseInt(document.getElementById('task-confidence').value) || null,
                 notes: document.getElementById('task-notes-field').value,
             };
 
             if (id) {
-                // Edit existing
                 const task = tasks.find(t => t.id === parseInt(id));
                 if (task) {
+                    const horizonChanged = task.horizon !== taskData.horizon;
+                    const oldHorizon = task.horizon;
                     Object.assign(task, taskData);
+                    if (horizonChanged) {
+                        const maxP = Math.max(0, ...tasks.filter(t => t.horizon === taskData.horizon && !t.completed && t.id !== task.id).map(t => t.priority));
+                        task.priority = maxP + 1;
+                        renumberPriorities(taskData.horizon);
+                        renumberPriorities(oldHorizon);
+                    }
                 }
             } else {
-                // Add new
+                const horizon = taskData.horizon;
+                const maxP = Math.max(0, ...tasks.filter(t => t.horizon === horizon && !t.completed).map(t => t.priority));
                 tasks.push({
                     id: getNextId(),
                     ...taskData,
-                    completed: false
+                    completed: false,
+                    priority: maxP + 1,
                 });
             }
 
@@ -877,21 +1622,24 @@
             closeModal();
         }
 
-        // Close menus on click outside
+        // ================================================
+        // Event Listeners
+        // ================================================
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.move-menu')) {
-                closeAllMenus();
-            }
+            if (!e.target.closest('.move-menu')) closeAllMenus();
         });
 
-        // Close modal on overlay click
         document.getElementById('modal-overlay').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('modal-overlay')) {
-                closeModal();
-            }
+            if (e.target === document.getElementById('modal-overlay')) closeModal();
         });
 
+        document.getElementById('apikey-modal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('apikey-modal')) closeApiKeyModal();
+        });
+
+        // ================================================
         // Initialize
+        // ================================================
         init();
     </script>
 </body>
