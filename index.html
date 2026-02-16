@@ -471,6 +471,21 @@
             gap: 12px;
         }
 
+        .task-priority {
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--twilight-purple);
+            background: var(--cream-dark);
+            border-radius: 6px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
         .task-checkbox {
             width: 22px;
             height: 22px;
@@ -684,11 +699,11 @@
         .cat-statecraft { background: linear-gradient(135deg, #E8D5E1, #D4B8CB); color: #5D3A5D; }
         .cat-finance { background: linear-gradient(135deg, #B5EAD7, #9DDCC9); color: #2D6A4F; }
         .cat-household { background: linear-gradient(135deg, #FFB4A2, #FF9B85); color: #8B3A3A; }
-        .cat-personal-admin { background: linear-gradient(135deg, #C9B1FF, #B8A4F8); color: white; }
-        .cat-personal-tech { background: linear-gradient(135deg, #89CFF0, #7EC8E3); color: #1E4D6B; }
-        .cat-family-decisions { background: linear-gradient(135deg, #FFB6C1, #FF91A4); color: white; }
+        .cat-personal { background: linear-gradient(135deg, #C9B1FF, #B8A4F8); color: white; }
         .cat-health { background: linear-gradient(135deg, #98FB98, #7FE57F); color: #1B4D1B; }
         .cat-personal-creative-goals { background: linear-gradient(135deg, #FFD700, #FFC400); color: #5C4800; }
+        .cat-rafa { background: linear-gradient(135deg, #87CEEB, #6BB3D9); color: #1a3a4a; }
+        .cat-nic { background: linear-gradient(135deg, #DDA0DD, #C98BC9); color: white; }
 
         /* Column indicators */
         .column-indicators {
@@ -782,11 +797,11 @@ Example:
             <button class="filter-pill" data-category="STATECRAFT" onclick="setFilter('STATECRAFT')">Statecraft</button>
             <button class="filter-pill" data-category="FINANCE" onclick="setFilter('FINANCE')">Finance</button>
             <button class="filter-pill" data-category="HOUSEHOLD" onclick="setFilter('HOUSEHOLD')">Household</button>
-            <button class="filter-pill" data-category="PERSONAL ADMIN" onclick="setFilter('PERSONAL ADMIN')">Personal Admin</button>
-            <button class="filter-pill" data-category="PERSONAL TECH" onclick="setFilter('PERSONAL TECH')">Personal Tech</button>
-            <button class="filter-pill" data-category="FAMILY DECISIONS" onclick="setFilter('FAMILY DECISIONS')">Family</button>
+            <button class="filter-pill" data-category="PERSONAL" onclick="setFilter('PERSONAL')">Personal</button>
             <button class="filter-pill" data-category="HEALTH" onclick="setFilter('HEALTH')">Health</button>
             <button class="filter-pill" data-category="PERSONAL / CREATIVE GOALS" onclick="setFilter('PERSONAL / CREATIVE GOALS')">Creative</button>
+            <button class="filter-pill" data-category="RAFA" onclick="setFilter('RAFA')">Rafa</button>
+            <button class="filter-pill" data-category="NIC" onclick="setFilter('NIC')">Nic</button>
         </div>
 
         <div class="horizons-wrapper" id="horizons-wrapper">
@@ -849,11 +864,11 @@ Example:
                         <option value="STATECRAFT">Statecraft</option>
                         <option value="FINANCE">Finance</option>
                         <option value="HOUSEHOLD">Household</option>
-                        <option value="PERSONAL ADMIN">Personal Admin</option>
-                        <option value="PERSONAL TECH">Personal Tech</option>
-                        <option value="FAMILY DECISIONS">Family Decisions</option>
+                        <option value="PERSONAL">Personal</option>
                         <option value="HEALTH">Health</option>
                         <option value="PERSONAL / CREATIVE GOALS">Personal / Creative Goals</option>
+                        <option value="RAFA">Rafa</option>
+                        <option value="NIC">Nic</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -907,14 +922,14 @@ Example:
             { id: 27, task: "Add wallpaper/contact paper to refrigerator", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false },
             { id: 28, task: "Execute closet reorganization", category: "HOUSEHOLD", horizon: "On Leave", notes: "", completed: false },
             { id: 29, task: "Implement kids' room changes", category: "HOUSEHOLD", horizon: "After Leave", notes: "", completed: false },
-            { id: 30, task: "Buy new slacks", category: "PERSONAL ADMIN", horizon: "Now", notes: "", completed: false },
-            { id: 31, task: "Clothing purge", category: "PERSONAL ADMIN", horizon: "On Leave", notes: "", completed: false },
-            { id: 32, task: "Use gift card for clothing", category: "PERSONAL ADMIN", horizon: "On Leave", notes: "", completed: false },
-            { id: 33, task: "Buy domain and host personal site", category: "PERSONAL TECH", horizon: "Now", notes: "", completed: false },
-            { id: 34, task: "Build food ordering / meal planning system", category: "PERSONAL TECH", horizon: "After Leave", notes: "", completed: false },
-            { id: 35, task: "Sort and process Twitter bookmarks", category: "PERSONAL TECH", horizon: "After Leave", notes: "", completed: false },
-            { id: 36, task: "Choose baby name", category: "FAMILY DECISIONS", horizon: "Now", notes: "", completed: false },
-            { id: 37, task: "Decide summer travel (weddings)", category: "FAMILY DECISIONS", horizon: "Now", notes: "", completed: false },
+            { id: 30, task: "Buy new slacks", category: "PERSONAL", horizon: "Now", notes: "", completed: false },
+            { id: 31, task: "Clothing purge", category: "PERSONAL", horizon: "On Leave", notes: "", completed: false },
+            { id: 32, task: "Use gift card for clothing", category: "PERSONAL", horizon: "On Leave", notes: "", completed: false },
+            { id: 33, task: "Buy domain and host personal site", category: "PERSONAL", horizon: "Now", notes: "", completed: false },
+            { id: 34, task: "Build food ordering / meal planning system", category: "PERSONAL", horizon: "After Leave", notes: "", completed: false },
+            { id: 35, task: "Sort and process Twitter bookmarks", category: "PERSONAL", horizon: "After Leave", notes: "", completed: false },
+            { id: 36, task: "Choose baby name", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false },
+            { id: 37, task: "Decide summer travel (weddings)", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false },
             { id: 38, task: "Collect PT records and knee assessment", category: "HEALTH", horizon: "Now", notes: "", completed: false },
             { id: 39, task: "Think seriously about writing a book", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", notes: "", completed: false },
             { id: 40, task: "Reading (25-30 books target)", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", notes: "", completed: false },
@@ -939,7 +954,19 @@ Example:
             const saved = localStorage.getItem('maternity-tasks');
             if (saved) {
                 tasks = JSON.parse(saved);
-                tasks = tasks.map(t => { const { confidence, ...rest } = t; return rest; });
+                // Migrate old categories and remove confidence
+                tasks = tasks.map(t => {
+                    const { confidence, ...rest } = t;
+                    // Merge PERSONAL ADMIN and PERSONAL TECH into PERSONAL
+                    if (rest.category === 'PERSONAL ADMIN' || rest.category === 'PERSONAL TECH') {
+                        rest.category = 'PERSONAL';
+                    }
+                    // Merge FAMILY DECISIONS into HOUSEHOLD
+                    if (rest.category === 'FAMILY DECISIONS') {
+                        rest.category = 'HOUSEHOLD';
+                    }
+                    return rest;
+                });
             } else {
                 tasks = initialTasks;
             }
@@ -959,18 +986,19 @@ Example:
         function getCategoryClass(category) {
             const map = {
                 'PEOPLE': 'cat-people', 'STATECRAFT': 'cat-statecraft', 'FINANCE': 'cat-finance',
-                'HOUSEHOLD': 'cat-household', 'PERSONAL ADMIN': 'cat-personal-admin',
-                'PERSONAL TECH': 'cat-personal-tech', 'FAMILY DECISIONS': 'cat-family-decisions',
-                'HEALTH': 'cat-health', 'PERSONAL / CREATIVE GOALS': 'cat-personal-creative-goals'
+                'HOUSEHOLD': 'cat-household', 'PERSONAL': 'cat-personal',
+                'HEALTH': 'cat-health', 'PERSONAL / CREATIVE GOALS': 'cat-personal-creative-goals',
+                'RAFA': 'cat-rafa', 'NIC': 'cat-nic'
             };
             return map[category] || '';
         }
 
-        function renderTask(task) {
+        function renderTask(task, priority) {
             const isExpanded = expandedNotes.has(task.id);
             return `
                 <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
                     <div class="task-header">
+                        <span class="task-priority">${priority}</span>
                         <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleComplete(${task.id})">
                         <div class="task-content">
                             <div class="task-name">${escapeHtml(task.task)}</div>
@@ -1007,13 +1035,13 @@ Example:
             horizons.forEach((horizon, index) => {
                 const filtered = tasks.filter(t => t.horizon === horizon && !t.completed && filterFn(t));
                 const allInHorizon = tasks.filter(t => t.horizon === horizon && !t.completed);
-                document.getElementById(listIds[index]).innerHTML = filtered.length ? filtered.map(renderTask).join('') : '<div class="empty-state">No tasks</div>';
+                document.getElementById(listIds[index]).innerHTML = filtered.length ? filtered.map((t, i) => renderTask(t, i + 1)).join('') : '<div class="empty-state">No tasks</div>';
                 // Show filtered count / total count when filtering
                 document.getElementById(countIds[index]).textContent = currentFilter === 'ALL' ? filtered.length : `${filtered.length}/${allInHorizon.length}`;
             });
             const completed = tasks.filter(t => t.completed && filterFn(t));
             const allCompleted = tasks.filter(t => t.completed);
-            document.getElementById('list-completed').innerHTML = completed.length ? completed.map(renderTask).join('') : '<div class="empty-state">No completed tasks</div>';
+            document.getElementById('list-completed').innerHTML = completed.length ? completed.map((t, i) => renderTask(t, i + 1)).join('') : '<div class="empty-state">No completed tasks</div>';
             document.getElementById('count-completed').textContent = currentFilter === 'ALL' ? completed.length : `${completed.length}/${allCompleted.length}`;
 
             // Stats show filtered counts
@@ -1084,7 +1112,7 @@ Example:
             if (!apiKey) { statusEl.className = 'ai-status show error'; statusEl.textContent = 'Please enter your Anthropic API key first.'; return; }
             if (!notepadText) { statusEl.className = 'ai-status show error'; statusEl.textContent = 'Please add some notes to categorize.'; return; }
             statusEl.className = 'ai-status show loading'; statusEl.textContent = 'Analyzing with Claude...';
-            const categories = ['PEOPLE', 'STATECRAFT', 'FINANCE', 'HOUSEHOLD', 'PERSONAL ADMIN', 'PERSONAL TECH', 'FAMILY DECISIONS', 'HEALTH', 'PERSONAL / CREATIVE GOALS'];
+            const categories = ['PEOPLE', 'STATECRAFT', 'FINANCE', 'HOUSEHOLD', 'PERSONAL', 'HEALTH', 'PERSONAL / CREATIVE GOALS', 'RAFA', 'NIC'];
             const horizons = ['Now', 'On Leave', 'After Leave'];
             const prompt = `You are helping categorize tasks for a maternity leave planning app.\n\nCategories: ${categories.join(', ')}\n\nHorizons:\n- "Now" = before leave\n- "On Leave" = during leave\n- "After Leave" = after returning\n\nExtract tasks from these notes and return ONLY a JSON array:\n{"task": "description", "category": "CATEGORY", "horizon": "Horizon"}\n\nNotes:\n${notepadText}\n\nJSON array only:`;
             try {
@@ -1175,13 +1203,76 @@ Example:
             if (!draggedElement || !draggedTask) { isDragging = false; return; }
             const columns = document.querySelectorAll('.horizon-column:not(.horizon-completed)');
             let targetHorizon = null;
+            let targetColumn = null;
             const dragRect = draggedElement.getBoundingClientRect();
-            const centerX = dragRect.left + dragRect.width / 2; const centerY = dragRect.top + dragRect.height / 2;
-            columns.forEach(col => { const rect = col.getBoundingClientRect(); if (centerX >= rect.left && centerX <= rect.right && centerY >= rect.top && centerY <= rect.bottom) targetHorizon = col.dataset.horizon; col.classList.remove('drag-over'); });
+            const centerX = dragRect.left + dragRect.width / 2;
+            const centerY = dragRect.top + dragRect.height / 2;
+
+            columns.forEach(col => {
+                const rect = col.getBoundingClientRect();
+                if (centerX >= rect.left && centerX <= rect.right && centerY >= rect.top && centerY <= rect.bottom) {
+                    targetHorizon = col.dataset.horizon;
+                    targetColumn = col;
+                }
+                col.classList.remove('drag-over');
+            });
+
             draggedElement.remove(); draggedElement = null;
             document.querySelectorAll('.drag-placeholder').forEach(el => el.classList.remove('drag-placeholder'));
-            if (targetHorizon && targetHorizon !== draggedTask.horizon) { moveTask(draggedTask.id, targetHorizon); if (navigator.vibrate) navigator.vibrate([30, 20, 30]); }
+
+            if (targetHorizon) {
+                // Find drop position within column
+                const taskItems = targetColumn.querySelectorAll('.task-item:not(.drag-placeholder)');
+                let insertBeforeId = null;
+                for (const item of taskItems) {
+                    const itemRect = item.getBoundingClientRect();
+                    const itemCenterY = itemRect.top + itemRect.height / 2;
+                    if (centerY < itemCenterY && parseInt(item.dataset.id) !== draggedTask.id) {
+                        insertBeforeId = parseInt(item.dataset.id);
+                        break;
+                    }
+                }
+
+                // Reorder tasks
+                reorderTask(draggedTask.id, targetHorizon, insertBeforeId);
+                if (navigator.vibrate) navigator.vibrate([30, 20, 30]);
+            }
+
             draggedTask = null; isDragging = false;
+        }
+
+        function reorderTask(taskId, targetHorizon, insertBeforeId) {
+            const task = tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            // Remove task from current position
+            tasks = tasks.filter(t => t.id !== taskId);
+
+            // Update horizon
+            task.horizon = targetHorizon;
+            task.completed = false;
+
+            // Find insert position
+            if (insertBeforeId !== null) {
+                const insertIndex = tasks.findIndex(t => t.id === insertBeforeId);
+                if (insertIndex >= 0) {
+                    tasks.splice(insertIndex, 0, task);
+                } else {
+                    tasks.push(task);
+                }
+            } else {
+                // Add to end of horizon
+                const lastInHorizon = tasks.filter(t => t.horizon === targetHorizon && !t.completed);
+                if (lastInHorizon.length > 0) {
+                    const lastIndex = tasks.findIndex(t => t.id === lastInHorizon[lastInHorizon.length - 1].id);
+                    tasks.splice(lastIndex + 1, 0, task);
+                } else {
+                    tasks.push(task);
+                }
+            }
+
+            saveTasks();
+            render();
         }
 
         function setupScrollIndicator() {
