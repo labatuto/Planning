@@ -116,8 +116,54 @@
         .controls {
             display: flex;
             gap: 12px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 8px;
             margin-bottom: 20px;
             flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-right: 4px;
+        }
+
+        .filter-pill {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            touch-action: manipulation;
+            background: var(--glass);
+            color: var(--text-muted);
+            border: 1px solid var(--glass-border);
+        }
+
+        .filter-pill:hover {
+            background: white;
+            color: var(--text-dark);
+        }
+
+        .filter-pill.active {
+            background: linear-gradient(135deg, var(--twilight-purple), var(--sunset-pink));
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 2px 10px rgba(123, 45, 91, 0.3);
+        }
+
+        .filter-pill.active:hover {
+            transform: translateY(-1px);
         }
 
         .btn {
@@ -729,6 +775,20 @@ Example:
             </button>
         </div>
 
+        <div class="filter-bar" id="filter-bar">
+            <span class="filter-label">Filter:</span>
+            <button class="filter-pill active" data-category="ALL" onclick="setFilter('ALL')">All</button>
+            <button class="filter-pill" data-category="PEOPLE" onclick="setFilter('PEOPLE')">People</button>
+            <button class="filter-pill" data-category="STATECRAFT" onclick="setFilter('STATECRAFT')">Statecraft</button>
+            <button class="filter-pill" data-category="FINANCE" onclick="setFilter('FINANCE')">Finance</button>
+            <button class="filter-pill" data-category="HOUSEHOLD" onclick="setFilter('HOUSEHOLD')">Household</button>
+            <button class="filter-pill" data-category="PERSONAL ADMIN" onclick="setFilter('PERSONAL ADMIN')">Personal Admin</button>
+            <button class="filter-pill" data-category="PERSONAL TECH" onclick="setFilter('PERSONAL TECH')">Personal Tech</button>
+            <button class="filter-pill" data-category="FAMILY DECISIONS" onclick="setFilter('FAMILY DECISIONS')">Family</button>
+            <button class="filter-pill" data-category="HEALTH" onclick="setFilter('HEALTH')">Health</button>
+            <button class="filter-pill" data-category="PERSONAL / CREATIVE GOALS" onclick="setFilter('PERSONAL / CREATIVE GOALS')">Creative</button>
+        </div>
+
         <div class="horizons-wrapper" id="horizons-wrapper">
             <div class="horizons" id="horizons">
                 <div class="horizon-column horizon-now" data-horizon="Now">
@@ -865,6 +925,7 @@ Example:
         let showCompleted = false;
         let expandedNotes = new Set();
         let notepadVisible = false;
+        let currentFilter = 'ALL';
         let draggedTask = null;
         let draggedElement = null;
         let dragStartX = 0;
@@ -939,19 +1000,28 @@ Example:
             const horizons = ['Now', 'On Leave', 'After Leave'];
             const listIds = ['list-now', 'list-on-leave', 'list-after-leave'];
             const countIds = ['count-now', 'count-on-leave', 'count-after-leave'];
+
+            // Apply category filter
+            const filterFn = currentFilter === 'ALL' ? () => true : (t) => t.category === currentFilter;
+
             horizons.forEach((horizon, index) => {
-                const filtered = tasks.filter(t => t.horizon === horizon && !t.completed);
-                document.getElementById(listIds[index]).innerHTML = filtered.length ? filtered.map(renderTask).join('') : '<div class="empty-state">No tasks yet</div>';
-                document.getElementById(countIds[index]).textContent = filtered.length;
+                const filtered = tasks.filter(t => t.horizon === horizon && !t.completed && filterFn(t));
+                const allInHorizon = tasks.filter(t => t.horizon === horizon && !t.completed);
+                document.getElementById(listIds[index]).innerHTML = filtered.length ? filtered.map(renderTask).join('') : '<div class="empty-state">No tasks</div>';
+                // Show filtered count / total count when filtering
+                document.getElementById(countIds[index]).textContent = currentFilter === 'ALL' ? filtered.length : `${filtered.length}/${allInHorizon.length}`;
             });
-            const completed = tasks.filter(t => t.completed);
+            const completed = tasks.filter(t => t.completed && filterFn(t));
+            const allCompleted = tasks.filter(t => t.completed);
             document.getElementById('list-completed').innerHTML = completed.length ? completed.map(renderTask).join('') : '<div class="empty-state">No completed tasks</div>';
-            document.getElementById('count-completed').textContent = completed.length;
-            const total = tasks.length;
-            const completedCount = completed.length;
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-completed').textContent = completedCount;
-            document.getElementById('stat-remaining').textContent = total - completedCount;
+            document.getElementById('count-completed').textContent = currentFilter === 'ALL' ? completed.length : `${completed.length}/${allCompleted.length}`;
+
+            // Stats show filtered counts
+            const filteredTasks = tasks.filter(filterFn);
+            const filteredCompleted = filteredTasks.filter(t => t.completed);
+            document.getElementById('stat-total').textContent = currentFilter === 'ALL' ? tasks.length : filteredTasks.length;
+            document.getElementById('stat-completed').textContent = currentFilter === 'ALL' ? allCompleted.length : filteredCompleted.length;
+            document.getElementById('stat-remaining').textContent = currentFilter === 'ALL' ? tasks.length - allCompleted.length : filteredTasks.length - filteredCompleted.length;
             setupDragAndDrop();
         }
 
@@ -995,6 +1065,14 @@ Example:
         document.getElementById('modal-overlay').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-overlay')) closeModal(); });
 
         function toggleNotepad() { notepadVisible = !notepadVisible; document.getElementById('notepad-content').classList.toggle('show', notepadVisible); document.getElementById('notepad-toggle').classList.toggle('collapsed', !notepadVisible); }
+
+        function setFilter(category) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-pill').forEach(pill => {
+                pill.classList.toggle('active', pill.dataset.category === category);
+            });
+            render();
+        }
         function clearNotepad() { document.getElementById('notepad-text').value = ''; localStorage.removeItem('notepad-text'); }
         function saveApiKey(key) { localStorage.setItem('anthropic-api-key', key); }
         document.getElementById('notepad-text').addEventListener('input', (e) => { localStorage.setItem('notepad-text', e.target.value); });
