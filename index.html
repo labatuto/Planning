@@ -3,8 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Task Checklist - Maternity Leave Planning</title>
+    <title>Task Planner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --sunset-coral: #FF6B6B;
+            --sunset-peach: #FFA07A;
+            --sunset-gold: #FFD93D;
+            --sunset-pink: #FF8FAB;
+            --sunset-magenta: #C9184A;
+            --twilight-purple: #7B2D5B;
+            --twilight-deep: #4A1942;
+            --ocean-teal: #20B2AA;
+            --ocean-cyan: #5EEAD4;
+            --cream: #FFF8F0;
+            --cream-dark: #F5EBE0;
+            --text-dark: #2D1B2E;
+            --text-muted: #6B5B6E;
+            --glass: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --shadow-warm: rgba(127, 45, 91, 0.15);
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
@@ -12,12 +34,14 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: #f5f5f7;
-            color: #1d1d1f;
-            line-height: 1.5;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--cream) 0%, #FFE4E1 50%, #E6D5F2 100%);
+            background-attachment: fixed;
+            color: var(--text-dark);
+            line-height: 1.6;
             min-height: 100vh;
             overflow-x: hidden;
+            letter-spacing: 0.01em;
         }
 
         .container {
@@ -28,29 +52,46 @@
 
         header {
             text-align: center;
-            padding: 30px 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 35px 25px;
+            background: linear-gradient(135deg, var(--sunset-coral) 0%, var(--sunset-peach) 35%, var(--sunset-pink) 70%, var(--twilight-purple) 100%);
             color: white;
-            margin-bottom: 30px;
-            border-radius: 12px;
+            margin-bottom: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px var(--shadow-warm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            pointer-events: none;
         }
 
         header h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
+            font-size: 1.9rem;
+            font-weight: 700;
             margin-bottom: 8px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            letter-spacing: 0.02em;
         }
 
         header p {
-            opacity: 0.9;
+            opacity: 0.95;
             font-size: 0.95rem;
+            font-weight: 400;
         }
 
         .stats {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-top: 20px;
+            gap: 35px;
+            margin-top: 22px;
             flex-wrap: wrap;
         }
 
@@ -59,69 +100,82 @@
         }
 
         .stat-number {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .stat-label {
             font-size: 0.8rem;
-            opacity: 0.8;
+            opacity: 0.9;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
         }
 
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 20px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 10px 20px;
+            padding: 12px 22px;
             border: none;
-            border-radius: 8px;
+            border-radius: 12px;
             cursor: pointer;
             font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
             touch-action: manipulation;
+            letter-spacing: 0.02em;
         }
 
         .btn-primary {
-            background: #667eea;
+            background: linear-gradient(135deg, var(--sunset-coral) 0%, var(--sunset-pink) 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.35);
         }
 
         .btn-primary:hover, .btn-primary:active {
-            background: #5a6fd6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.45);
         }
 
         .btn-secondary {
-            background: white;
-            color: #1d1d1f;
-            border: 1px solid #d2d2d7;
+            background: var(--glass);
+            color: var(--text-dark);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
         }
 
         .btn-secondary:hover, .btn-secondary:active {
-            background: #f5f5f7;
+            background: white;
+            transform: translateY(-1px);
         }
 
         .btn-ai {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--ocean-teal) 0%, var(--ocean-cyan) 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(32, 178, 170, 0.35);
         }
 
-        .btn-small {
-            padding: 6px 12px;
-            font-size: 0.8rem;
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(32, 178, 170, 0.45);
         }
 
         /* Notepad Section */
         .notepad-section {
-            background: white;
-            border-radius: 12px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
             padding: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 20px var(--shadow-warm);
+            border: 1px solid var(--glass-border);
         }
 
         .notepad-header {
@@ -133,16 +187,18 @@
         }
 
         .notepad-title {
-            font-size: 1.1rem;
+            font-size: 1.05rem;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
+            color: var(--twilight-purple);
         }
 
         .notepad-toggle {
-            font-size: 1.2rem;
-            transition: transform 0.2s;
+            font-size: 1rem;
+            transition: transform 0.3s ease;
+            color: var(--sunset-coral);
         }
 
         .notepad-toggle.collapsed {
@@ -159,19 +215,26 @@
 
         .notepad-textarea {
             width: 100%;
-            min-height: 150px;
-            padding: 12px;
-            border: 1px solid #d2d2d7;
-            border-radius: 8px;
+            min-height: 140px;
+            padding: 14px;
+            border: 2px solid transparent;
+            border-radius: 12px;
             font-size: 0.95rem;
             font-family: inherit;
             resize: vertical;
             margin-bottom: 15px;
+            background: white;
+            color: var(--text-dark);
+            transition: border-color 0.2s;
         }
 
         .notepad-textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--ocean-teal);
+        }
+
+        .notepad-textarea::placeholder {
+            color: var(--text-muted);
         }
 
         .notepad-actions {
@@ -181,178 +244,192 @@
         }
 
         .api-key-section {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e8e8ed;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(123, 45, 91, 0.1);
         }
 
         .api-key-input {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d2d2d7;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border: 2px solid transparent;
+            border-radius: 10px;
             font-size: 0.9rem;
-            font-family: monospace;
+            font-family: 'DM Sans', monospace;
+            background: white;
+            transition: border-color 0.2s;
         }
 
         .api-key-input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--ocean-teal);
         }
 
         .api-key-label {
-            font-size: 0.85rem;
-            color: #666;
+            font-size: 0.82rem;
+            color: var(--text-muted);
             margin-bottom: 8px;
             display: block;
+            font-weight: 500;
         }
 
         .ai-status {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 8px;
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 10px;
             font-size: 0.85rem;
             display: none;
+            font-weight: 500;
         }
 
-        .ai-status.show {
-            display: block;
-        }
+        .ai-status.show { display: block; }
+        .ai-status.loading { background: rgba(94, 234, 212, 0.2); color: var(--ocean-teal); }
+        .ai-status.success { background: rgba(94, 234, 212, 0.25); color: #0d9488; }
+        .ai-status.error { background: rgba(255, 107, 107, 0.15); color: var(--sunset-magenta); }
 
-        .ai-status.loading {
-            background: #e3f2fd;
-            color: #1565c0;
-        }
-
-        .ai-status.success {
-            background: #e8f5e9;
-            color: #2e7d32;
-        }
-
-        .ai-status.error {
-            background: #ffebee;
-            color: #c62828;
-        }
-
-        /* Horizons - Mobile swipe container */
+        /* Horizons */
         .horizons-wrapper {
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             margin: 0 -20px;
-            padding: 0 20px;
+            padding: 0 20px 10px;
         }
 
-        .horizons-wrapper::-webkit-scrollbar {
-            display: none;
-        }
+        .horizons-wrapper::-webkit-scrollbar { display: none; }
 
         .horizons {
             display: flex;
-            gap: 20px;
+            gap: 18px;
             min-width: min-content;
         }
 
         .horizon-column {
-            background: white;
-            border-radius: 12px;
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-radius: 18px;
             padding: 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 24px var(--shadow-warm);
+            border: 1px solid var(--glass-border);
             min-width: 300px;
             flex: 1;
             scroll-snap-align: center;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
         }
 
         .horizon-column.drag-over {
             transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
-            border: 2px dashed #667eea;
+            box-shadow: 0 12px 35px rgba(32, 178, 170, 0.3);
+            border: 2px solid var(--ocean-teal);
         }
 
         .horizon-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f5f5f7;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 2px solid transparent;
         }
 
         .horizon-title {
-            font-size: 1.1rem;
-            font-weight: 600;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
         }
 
         .horizon-count {
-            background: #f5f5f7;
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 20px;
-            font-size: 0.85rem;
-            color: #666;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: white;
         }
 
-        .horizon-now .horizon-header { border-bottom-color: #ff9500; }
-        .horizon-on-leave .horizon-header { border-bottom-color: #34c759; }
-        .horizon-after-leave .horizon-header { border-bottom-color: #007aff; }
-        .horizon-completed .horizon-header { border-bottom-color: #8e8e93; }
+        /* Column-specific colors - sunset progression */
+        .horizon-now .horizon-header {
+            border-bottom-color: var(--sunset-coral);
+        }
+        .horizon-now .horizon-title { color: var(--sunset-coral); }
+        .horizon-now .horizon-count { background: linear-gradient(135deg, var(--sunset-coral), var(--sunset-peach)); }
+
+        .horizon-on-leave .horizon-header {
+            border-bottom-color: var(--sunset-pink);
+        }
+        .horizon-on-leave .horizon-title { color: var(--sunset-pink); }
+        .horizon-on-leave .horizon-count { background: linear-gradient(135deg, var(--sunset-pink), var(--twilight-purple)); }
+
+        .horizon-after-leave .horizon-header {
+            border-bottom-color: var(--twilight-purple);
+        }
+        .horizon-after-leave .horizon-title { color: var(--twilight-purple); }
+        .horizon-after-leave .horizon-count { background: linear-gradient(135deg, var(--twilight-purple), var(--twilight-deep)); }
+
+        .horizon-completed .horizon-header {
+            border-bottom-color: var(--ocean-teal);
+        }
+        .horizon-completed .horizon-title { color: var(--ocean-teal); }
+        .horizon-completed .horizon-count { background: var(--ocean-teal); }
 
         .task-list {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            min-height: 100px;
+            min-height: 80px;
         }
 
         .task-item {
-            background: #f9f9fb;
-            border-radius: 8px;
-            padding: 12px;
-            transition: all 0.2s;
+            background: white;
+            border-radius: 12px;
+            padding: 14px;
+            transition: all 0.2s ease;
             touch-action: none;
             user-select: none;
+            border: 1px solid rgba(123, 45, 91, 0.08);
         }
 
         .task-item:hover {
-            background: #f0f0f5;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px var(--shadow-warm);
         }
 
         .task-item.completed {
-            opacity: 0.6;
+            opacity: 0.55;
         }
 
         .task-item.completed .task-name {
             text-decoration: line-through;
+            color: var(--text-muted);
         }
 
         .task-item.dragging {
-            opacity: 0.9;
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            opacity: 0.95;
+            transform: scale(1.03) rotate(1deg);
+            box-shadow: 0 15px 40px rgba(127, 45, 91, 0.25);
             z-index: 1000;
             position: fixed;
             pointer-events: none;
-            background: white;
+            border: 2px solid var(--ocean-teal);
         }
 
         .task-item.drag-placeholder {
-            opacity: 0.3;
-            border: 2px dashed #667eea;
+            opacity: 0.25;
+            border: 2px dashed var(--ocean-teal);
             background: transparent;
         }
 
         .task-header {
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 12px;
         }
 
         .task-checkbox {
             width: 22px;
             height: 22px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: var(--ocean-teal);
             flex-shrink: 0;
             margin-top: 2px;
         }
@@ -366,26 +443,29 @@
             font-weight: 500;
             font-size: 0.95rem;
             word-break: break-word;
+            color: var(--text-dark);
+            line-height: 1.4;
         }
 
         .task-meta {
             display: flex;
             gap: 8px;
-            margin-top: 6px;
+            margin-top: 8px;
             flex-wrap: wrap;
         }
 
         .task-category {
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            background: #e8e8ed;
-            border-radius: 4px;
-            color: #666;
+            font-size: 0.7rem;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            text-transform: uppercase;
         }
 
         .task-actions {
             display: flex;
-            gap: 4px;
+            gap: 2px;
             flex-shrink: 0;
         }
 
@@ -393,46 +473,50 @@
             background: none;
             border: none;
             cursor: pointer;
-            padding: 6px;
-            border-radius: 4px;
-            color: #8e8e93;
-            font-size: 1.1rem;
+            padding: 6px 8px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            font-size: 1rem;
             transition: all 0.2s;
             touch-action: manipulation;
         }
 
         .task-action-btn:hover, .task-action-btn:active {
-            background: #e8e8ed;
-            color: #1d1d1f;
+            background: var(--cream-dark);
+            color: var(--text-dark);
         }
 
         .task-notes {
-            margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #e8e8ed;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(123, 45, 91, 0.08);
         }
 
         .task-notes-text {
             font-size: 0.85rem;
-            color: #666;
+            color: var(--text-muted);
             white-space: pre-wrap;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
+            line-height: 1.5;
         }
 
         .task-notes-input {
             width: 100%;
-            padding: 8px;
-            border: 1px solid #d2d2d7;
-            border-radius: 6px;
+            padding: 10px;
+            border: 2px solid transparent;
+            border-radius: 8px;
             font-size: 0.85rem;
             font-family: inherit;
             resize: vertical;
             min-height: 60px;
+            background: var(--cream);
+            transition: border-color 0.2s;
         }
 
         .task-notes-input:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--ocean-teal);
+            background: white;
         }
 
         /* Modal */
@@ -443,59 +527,64 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.5);
+            background: rgba(45, 27, 46, 0.6);
+            backdrop-filter: blur(4px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             padding: 20px;
         }
 
-        .modal-overlay.show {
-            display: flex;
-        }
+        .modal-overlay.show { display: flex; }
 
         .modal {
             background: white;
-            border-radius: 12px;
-            padding: 25px;
-            max-width: 500px;
+            border-radius: 20px;
+            padding: 28px;
+            max-width: 480px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(45, 27, 46, 0.3);
         }
 
         .modal h2 {
-            margin-bottom: 20px;
-            font-size: 1.3rem;
+            margin-bottom: 24px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--twilight-purple);
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            font-size: 0.9rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            color: var(--text-dark);
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #d2d2d7;
-            border-radius: 8px;
+            padding: 12px 14px;
+            border: 2px solid var(--cream-dark);
+            border-radius: 10px;
             font-size: 0.95rem;
             font-family: inherit;
+            transition: border-color 0.2s;
+            background: white;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: var(--ocean-teal);
         }
 
         .form-group textarea {
@@ -505,165 +594,108 @@
 
         .modal-actions {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             justify-content: flex-end;
-            margin-top: 20px;
+            margin-top: 24px;
         }
 
         .empty-state {
             text-align: center;
-            padding: 30px;
-            color: #8e8e93;
+            padding: 28px;
+            color: var(--text-muted);
             font-size: 0.9rem;
+            font-style: italic;
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
-            }
-
+            .container { padding: 15px; }
             header {
-                padding: 20px 15px;
+                padding: 25px 18px;
                 border-radius: 0;
                 margin: -15px -15px 20px -15px;
             }
-
-            header h1 {
-                font-size: 1.4rem;
-            }
-
-            .stats {
-                gap: 20px;
-            }
-
-            .stat-number {
-                font-size: 1.5rem;
-            }
-
-            .horizons-wrapper {
-                margin: 0 -15px;
-                padding: 0 15px;
-            }
-
-            .horizon-column {
-                min-width: 85vw;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-                text-align: center;
-            }
-
-            .notepad-actions {
-                flex-direction: column;
-            }
-
-            .notepad-actions .btn {
-                width: 100%;
-            }
+            header h1 { font-size: 1.5rem; }
+            .stats { gap: 22px; }
+            .stat-number { font-size: 1.7rem; }
+            .horizons-wrapper { margin: 0 -15px; padding: 0 15px 10px; }
+            .horizon-column { min-width: 85vw; }
+            .controls { flex-direction: column; }
+            .btn { width: 100%; text-align: center; }
+            .notepad-actions { flex-direction: column; }
+            .notepad-actions .btn { width: 100%; }
         }
 
         @media (min-width: 769px) {
-            .horizons-wrapper {
-                overflow-x: visible;
-            }
-
-            .horizons {
-                display: grid;
-                grid-template-columns: repeat(3, 1fr);
-            }
-
-            .horizon-column {
-                min-width: auto;
-            }
-
-            .horizon-column.horizon-completed {
-                grid-column: span 3;
-            }
+            .horizons-wrapper { overflow-x: visible; }
+            .horizons { display: grid; grid-template-columns: repeat(3, 1fr); }
+            .horizon-column { min-width: auto; }
+            .horizon-column.horizon-completed { grid-column: span 3; }
         }
 
-        /* Category colors */
-        .cat-people { background: #ffeaa7; }
-        .cat-statecraft { background: #dfe6e9; }
-        .cat-finance { background: #81ecec; }
-        .cat-household { background: #fab1a0; }
-        .cat-personal-admin { background: #a29bfe; color: white; }
-        .cat-personal-tech { background: #74b9ff; }
-        .cat-family-decisions { background: #fd79a8; color: white; }
-        .cat-health { background: #55efc4; }
-        .cat-personal-creative-goals { background: #fdcb6e; }
+        /* Category colors - warm city pop palette */
+        .cat-people { background: linear-gradient(135deg, #FFE5B4, #FFD1A4); color: #8B4513; }
+        .cat-statecraft { background: linear-gradient(135deg, #E8D5E1, #D4B8CB); color: #5D3A5D; }
+        .cat-finance { background: linear-gradient(135deg, #B5EAD7, #9DDCC9); color: #2D6A4F; }
+        .cat-household { background: linear-gradient(135deg, #FFB4A2, #FF9B85); color: #8B3A3A; }
+        .cat-personal-admin { background: linear-gradient(135deg, #C9B1FF, #B8A4F8); color: white; }
+        .cat-personal-tech { background: linear-gradient(135deg, #89CFF0, #7EC8E3); color: #1E4D6B; }
+        .cat-family-decisions { background: linear-gradient(135deg, #FFB6C1, #FF91A4); color: white; }
+        .cat-health { background: linear-gradient(135deg, #98FB98, #7FE57F); color: #1B4D1B; }
+        .cat-personal-creative-goals { background: linear-gradient(135deg, #FFD700, #FFC400); color: #5C4800; }
 
-        /* Drag indicator on mobile */
-        .drag-handle {
-            cursor: grab;
-            padding: 4px;
-            color: #ccc;
-            font-size: 1rem;
-        }
-
-        .drag-handle:active {
-            cursor: grabbing;
-        }
-
-        /* Column indicator dots for mobile */
+        /* Column indicators */
         .column-indicators {
             display: none;
             justify-content: center;
-            gap: 8px;
-            margin-top: 15px;
+            gap: 10px;
+            margin-top: 18px;
         }
 
         @media (max-width: 768px) {
-            .column-indicators {
-                display: flex;
-            }
+            .column-indicators { display: flex; }
         }
 
         .column-dot {
-            width: 8px;
-            height: 8px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
-            background: #d2d2d7;
-            transition: all 0.2s;
+            background: rgba(123, 45, 91, 0.2);
+            transition: all 0.3s ease;
         }
 
         .column-dot.active {
-            background: #667eea;
-            transform: scale(1.3);
+            background: linear-gradient(135deg, var(--sunset-coral), var(--sunset-pink));
+            transform: scale(1.4);
+            box-shadow: 0 2px 8px rgba(255, 107, 107, 0.4);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Maternity Leave Task Planner</h1>
+            <h1>Maternity Leave Planner</h1>
             <p>Track your tasks before, during, and after leave</p>
             <div class="stats">
                 <div class="stat">
                     <div class="stat-number" id="stat-total">0</div>
-                    <div class="stat-label">Total Tasks</div>
+                    <div class="stat-label">Total</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number" id="stat-completed">0</div>
-                    <div class="stat-label">Completed</div>
+                    <div class="stat-label">Done</div>
                 </div>
                 <div class="stat">
                     <div class="stat-number" id="stat-remaining">0</div>
-                    <div class="stat-label">Remaining</div>
+                    <div class="stat-label">To Go</div>
                 </div>
             </div>
         </header>
 
-        <!-- Notepad Section -->
         <div class="notepad-section">
             <div class="notepad-header" onclick="toggleNotepad()">
                 <span class="notepad-title">
-                    <span class="notepad-toggle" id="notepad-toggle">▼</span>
+                    <span class="notepad-toggle collapsed" id="notepad-toggle">▼</span>
                     Quick Notes & Task Import
                 </span>
             </div>
@@ -672,7 +704,7 @@
 
 Example:
 - Need to call the pediatrician
-- Research daycare options (Finance? Family?)
+- Research daycare options
 - Buy diapers before next week"></textarea>
                 <div class="notepad-actions">
                     <button class="btn btn-ai" onclick="categorizeWithAI()">
@@ -682,7 +714,7 @@ Example:
                 </div>
                 <div class="ai-status" id="ai-status"></div>
                 <div class="api-key-section">
-                    <label class="api-key-label">Anthropic API Key (stored locally in your browser)</label>
+                    <label class="api-key-label">Anthropic API Key (stored locally)</label>
                     <input type="password" class="api-key-input" id="api-key"
                            placeholder="sk-ant-..."
                            onchange="saveApiKey(this.value)">
@@ -701,7 +733,7 @@ Example:
             <div class="horizons" id="horizons">
                 <div class="horizon-column horizon-now" data-horizon="Now">
                     <div class="horizon-header">
-                        <span class="horizon-title">Now (Before Leave)</span>
+                        <span class="horizon-title">Now</span>
                         <span class="horizon-count" id="count-now">0</span>
                     </div>
                     <div class="task-list" id="list-now"></div>
@@ -740,18 +772,17 @@ Example:
         </div>
     </div>
 
-    <!-- Add/Edit Modal -->
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal">
             <h2 id="modal-title">Add New Task</h2>
             <form id="task-form" onsubmit="saveTask(event)">
                 <input type="hidden" id="task-id">
                 <div class="form-group">
-                    <label for="task-name">Task Name *</label>
+                    <label for="task-name">Task Name</label>
                     <input type="text" id="task-name" required placeholder="What needs to be done?">
                 </div>
                 <div class="form-group">
-                    <label for="task-category">Category *</label>
+                    <label for="task-category">Category</label>
                     <select id="task-category" required>
                         <option value="">Select category...</option>
                         <option value="PEOPLE">People</option>
@@ -766,7 +797,7 @@ Example:
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="task-horizon">Horizon *</label>
+                    <label for="task-horizon">When</label>
                     <select id="task-horizon" required>
                         <option value="Now">Now (Before Leave)</option>
                         <option value="On Leave">On Leave</option>
@@ -779,16 +810,14 @@ Example:
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Task</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Initial data (without confidence)
         const initialTasks = [
-            // PEOPLE
             { id: 1, task: "Design performance tracking system for Beez", category: "PEOPLE", horizon: "Now", notes: "", completed: false },
             { id: 2, task: "Define promotion / raise criteria for Beez", category: "PEOPLE", horizon: "Now", notes: "", completed: false },
             { id: 3, task: "Define Rita's editorial authority and responsibilities", category: "PEOPLE", horizon: "Now", notes: "", completed: false },
@@ -799,22 +828,16 @@ Example:
             { id: 8, task: "Define Jasper's autonomy and default actions", category: "PEOPLE", horizon: "Now", notes: "", completed: false },
             { id: 9, task: "Hire new editor", category: "PEOPLE", horizon: "Now", notes: "", completed: false },
             { id: 10, task: "Onboard new editor", category: "PEOPLE", horizon: "Now", notes: "", completed: false },
-
-            // STATECRAFT
             { id: 11, task: "Bank episodes for weekly release during absence", category: "STATECRAFT", horizon: "Now", notes: "", completed: false },
             { id: 12, task: "Schedule / record episodes needed for banking", category: "STATECRAFT", horizon: "Now", notes: "", completed: false },
             { id: 13, task: "Plan episode targets for Q2 and Q3", category: "STATECRAFT", horizon: "Now", notes: "", completed: false },
             { id: 14, task: "Kick off guest outreach for Q2 / Q3", category: "STATECRAFT", horizon: "Now", notes: "", completed: false },
             { id: 15, task: "Identify deep-dive / flagship episodes", category: "STATECRAFT", horizon: "Now", notes: "", completed: false },
             { id: 16, task: "Plan video expansion for late Q2", category: "STATECRAFT", horizon: "After Leave", notes: "", completed: false },
-
-            // FINANCE
             { id: 17, task: "Confirm account is HSA or FSA", category: "FINANCE", horizon: "Now", notes: "", completed: false },
             { id: 18, task: "Finalize annual budget", category: "FINANCE", horizon: "Now", notes: "", completed: false },
             { id: 19, task: "Plan eligible usage for baby expenses", category: "FINANCE", horizon: "Now", notes: "", completed: false },
             { id: 20, task: "Build budget tracking system (MVP)", category: "FINANCE", horizon: "Now", notes: "", completed: false },
-
-            // HOUSEHOLD
             { id: 21, task: "Take down Christmas decorations", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false },
             { id: 22, task: "Design plan for shared kids' room", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false },
             { id: 23, task: "Add bookshelves in main room", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false },
@@ -824,37 +847,24 @@ Example:
             { id: 27, task: "Add wallpaper/contact paper to refrigerator", category: "HOUSEHOLD", horizon: "Now", notes: "", completed: false },
             { id: 28, task: "Execute closet reorganization", category: "HOUSEHOLD", horizon: "On Leave", notes: "", completed: false },
             { id: 29, task: "Implement kids' room changes", category: "HOUSEHOLD", horizon: "After Leave", notes: "", completed: false },
-
-            // PERSONAL ADMIN
             { id: 30, task: "Buy new slacks", category: "PERSONAL ADMIN", horizon: "Now", notes: "", completed: false },
             { id: 31, task: "Clothing purge", category: "PERSONAL ADMIN", horizon: "On Leave", notes: "", completed: false },
             { id: 32, task: "Use gift card for clothing", category: "PERSONAL ADMIN", horizon: "On Leave", notes: "", completed: false },
-
-            // PERSONAL TECH
             { id: 33, task: "Buy domain and host personal site", category: "PERSONAL TECH", horizon: "Now", notes: "", completed: false },
             { id: 34, task: "Build food ordering / meal planning system", category: "PERSONAL TECH", horizon: "After Leave", notes: "", completed: false },
             { id: 35, task: "Sort and process Twitter bookmarks", category: "PERSONAL TECH", horizon: "After Leave", notes: "", completed: false },
-
-            // FAMILY DECISIONS
             { id: 36, task: "Choose baby name", category: "FAMILY DECISIONS", horizon: "Now", notes: "", completed: false },
             { id: 37, task: "Decide summer travel (weddings)", category: "FAMILY DECISIONS", horizon: "Now", notes: "", completed: false },
-
-            // HEALTH
             { id: 38, task: "Collect PT records and knee assessment", category: "HEALTH", horizon: "Now", notes: "", completed: false },
-
-            // PERSONAL / CREATIVE GOALS
             { id: 39, task: "Think seriously about writing a book", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", notes: "", completed: false },
             { id: 40, task: "Reading (25-30 books target)", category: "PERSONAL / CREATIVE GOALS", horizon: "On Leave", notes: "", completed: false },
             { id: 41, task: "Reach 2300 blitz chess rating", category: "PERSONAL / CREATIVE GOALS", horizon: "After Leave", notes: "", completed: false },
         ];
 
-        // State
         let tasks = [];
         let showCompleted = false;
         let expandedNotes = new Set();
         let notepadVisible = false;
-
-        // Drag state
         let draggedTask = null;
         let draggedElement = null;
         let dragStartX = 0;
@@ -864,73 +874,43 @@ Example:
         let longPressTimer = null;
         let isDragging = false;
 
-        // Initialize
         function init() {
             const saved = localStorage.getItem('maternity-tasks');
             if (saved) {
                 tasks = JSON.parse(saved);
-                // Remove confidence from old data
-                tasks = tasks.map(t => {
-                    const { confidence, ...rest } = t;
-                    return rest;
-                });
+                tasks = tasks.map(t => { const { confidence, ...rest } = t; return rest; });
             } else {
                 tasks = initialTasks;
             }
             saveTasks();
-
-            // Load API key
             const apiKey = localStorage.getItem('anthropic-api-key');
-            if (apiKey) {
-                document.getElementById('api-key').value = apiKey;
-            }
-
-            // Load notepad
+            if (apiKey) document.getElementById('api-key').value = apiKey;
             const notepadText = localStorage.getItem('notepad-text');
-            if (notepadText) {
-                document.getElementById('notepad-text').value = notepadText;
-            }
-
+            if (notepadText) document.getElementById('notepad-text').value = notepadText;
             render();
             setupScrollIndicator();
             setupDragAndDrop();
         }
 
-        // Save to localStorage
-        function saveTasks() {
-            localStorage.setItem('maternity-tasks', JSON.stringify(tasks));
-        }
+        function saveTasks() { localStorage.setItem('maternity-tasks', JSON.stringify(tasks)); }
+        function getNextId() { return Math.max(0, ...tasks.map(t => t.id)) + 1; }
 
-        // Get next ID
-        function getNextId() {
-            return Math.max(0, ...tasks.map(t => t.id)) + 1;
-        }
-
-        // Get category class
         function getCategoryClass(category) {
             const map = {
-                'PEOPLE': 'cat-people',
-                'STATECRAFT': 'cat-statecraft',
-                'FINANCE': 'cat-finance',
-                'HOUSEHOLD': 'cat-household',
-                'PERSONAL ADMIN': 'cat-personal-admin',
-                'PERSONAL TECH': 'cat-personal-tech',
-                'FAMILY DECISIONS': 'cat-family-decisions',
-                'HEALTH': 'cat-health',
-                'PERSONAL / CREATIVE GOALS': 'cat-personal-creative-goals'
+                'PEOPLE': 'cat-people', 'STATECRAFT': 'cat-statecraft', 'FINANCE': 'cat-finance',
+                'HOUSEHOLD': 'cat-household', 'PERSONAL ADMIN': 'cat-personal-admin',
+                'PERSONAL TECH': 'cat-personal-tech', 'FAMILY DECISIONS': 'cat-family-decisions',
+                'HEALTH': 'cat-health', 'PERSONAL / CREATIVE GOALS': 'cat-personal-creative-goals'
             };
             return map[category] || '';
         }
 
-        // Render task item
         function renderTask(task) {
             const isExpanded = expandedNotes.has(task.id);
             return `
                 <div class="task-item ${task.completed ? 'completed' : ''}" data-id="${task.id}">
                     <div class="task-header">
-                        <input type="checkbox" class="task-checkbox"
-                            ${task.completed ? 'checked' : ''}
-                            onchange="toggleComplete(${task.id})">
+                        <input type="checkbox" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="toggleComplete(${task.id})">
                         <div class="task-content">
                             <div class="task-name">${escapeHtml(task.task)}</div>
                             <div class="task-meta">
@@ -938,9 +918,7 @@ Example:
                             </div>
                         </div>
                         <div class="task-actions">
-                            <button class="task-action-btn" onclick="event.stopPropagation(); toggleNotes(${task.id})" title="Notes">
-                                ${task.notes ? '📝' : '📋'}
-                            </button>
+                            <button class="task-action-btn" onclick="event.stopPropagation(); toggleNotes(${task.id})" title="Notes">${task.notes ? '📝' : '📋'}</button>
                             <button class="task-action-btn" onclick="event.stopPropagation(); openEditModal(${task.id})" title="Edit">✏️</button>
                             <button class="task-action-btn" onclick="event.stopPropagation(); deleteTask(${task.id})" title="Delete">🗑️</button>
                         </div>
@@ -948,114 +926,42 @@ Example:
                     ${isExpanded ? `
                         <div class="task-notes">
                             ${task.notes ? `<div class="task-notes-text">${escapeHtml(task.notes)}</div>` : ''}
-                            <textarea class="task-notes-input"
-                                placeholder="Add notes..."
-                                onclick="event.stopPropagation()"
-                                ontouchstart="event.stopPropagation()"
-                                onblur="saveNotes(${task.id}, this.value)">${escapeHtml(task.notes || '')}</textarea>
+                            <textarea class="task-notes-input" placeholder="Add notes..." onclick="event.stopPropagation()" ontouchstart="event.stopPropagation()" onblur="saveNotes(${task.id}, this.value)">${escapeHtml(task.notes || '')}</textarea>
                         </div>
                     ` : ''}
                 </div>
             `;
         }
 
-        // Escape HTML
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
+        function escapeHtml(text) { const div = document.createElement('div'); div.textContent = text; return div.innerHTML; }
 
-        // Render all
         function render() {
             const horizons = ['Now', 'On Leave', 'After Leave'];
             const listIds = ['list-now', 'list-on-leave', 'list-after-leave'];
             const countIds = ['count-now', 'count-on-leave', 'count-after-leave'];
-
             horizons.forEach((horizon, index) => {
                 const filtered = tasks.filter(t => t.horizon === horizon && !t.completed);
-
-                document.getElementById(listIds[index]).innerHTML = filtered.length
-                    ? filtered.map(renderTask).join('')
-                    : '<div class="empty-state">No tasks</div>';
+                document.getElementById(listIds[index]).innerHTML = filtered.length ? filtered.map(renderTask).join('') : '<div class="empty-state">No tasks yet</div>';
                 document.getElementById(countIds[index]).textContent = filtered.length;
             });
-
-            // Completed
             const completed = tasks.filter(t => t.completed);
-            document.getElementById('list-completed').innerHTML = completed.length
-                ? completed.map(renderTask).join('')
-                : '<div class="empty-state">No completed tasks</div>';
+            document.getElementById('list-completed').innerHTML = completed.length ? completed.map(renderTask).join('') : '<div class="empty-state">No completed tasks</div>';
             document.getElementById('count-completed').textContent = completed.length;
-
-            // Stats
             const total = tasks.length;
             const completedCount = completed.length;
             document.getElementById('stat-total').textContent = total;
             document.getElementById('stat-completed').textContent = completedCount;
             document.getElementById('stat-remaining').textContent = total - completedCount;
-
-            // Re-setup drag after render
             setupDragAndDrop();
         }
 
-        // Toggle complete
-        function toggleComplete(id) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.completed = !task.completed;
-                saveTasks();
-                render();
-            }
-        }
+        function toggleComplete(id) { const task = tasks.find(t => t.id === id); if (task) { task.completed = !task.completed; saveTasks(); render(); } }
+        function toggleNotes(id) { if (expandedNotes.has(id)) expandedNotes.delete(id); else expandedNotes.add(id); render(); }
+        function saveNotes(id, notes) { const task = tasks.find(t => t.id === id); if (task) { task.notes = notes; saveTasks(); } }
+        function moveTask(id, horizon) { const task = tasks.find(t => t.id === id); if (task) { task.horizon = horizon; task.completed = false; saveTasks(); render(); } }
+        function deleteTask(id) { if (confirm('Delete this task?')) { tasks = tasks.filter(t => t.id !== id); saveTasks(); render(); } }
+        function toggleCompleted() { showCompleted = !showCompleted; document.getElementById('completed-column').style.display = showCompleted ? 'block' : 'none'; document.getElementById('toggle-completed-text').textContent = showCompleted ? 'Hide Completed' : 'Show Completed'; }
 
-        // Toggle notes
-        function toggleNotes(id) {
-            if (expandedNotes.has(id)) {
-                expandedNotes.delete(id);
-            } else {
-                expandedNotes.add(id);
-            }
-            render();
-        }
-
-        // Save notes
-        function saveNotes(id, notes) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.notes = notes;
-                saveTasks();
-            }
-        }
-
-        // Move task
-        function moveTask(id, horizon) {
-            const task = tasks.find(t => t.id === id);
-            if (task) {
-                task.horizon = horizon;
-                task.completed = false;
-                saveTasks();
-                render();
-            }
-        }
-
-        // Delete task
-        function deleteTask(id) {
-            if (confirm('Delete this task?')) {
-                tasks = tasks.filter(t => t.id !== id);
-                saveTasks();
-                render();
-            }
-        }
-
-        // Toggle completed column
-        function toggleCompleted() {
-            showCompleted = !showCompleted;
-            document.getElementById('completed-column').style.display = showCompleted ? 'block' : 'none';
-            document.getElementById('toggle-completed-text').textContent = showCompleted ? 'Hide Completed' : 'Show Completed';
-        }
-
-        // Open add modal
         function openAddModal() {
             document.getElementById('modal-title').textContent = 'Add New Task';
             document.getElementById('task-id').value = '';
@@ -1063,11 +969,9 @@ Example:
             document.getElementById('modal-overlay').classList.add('show');
         }
 
-        // Open edit modal
         function openEditModal(id) {
             const task = tasks.find(t => t.id === id);
             if (!task) return;
-
             document.getElementById('modal-title').textContent = 'Edit Task';
             document.getElementById('task-id').value = id;
             document.getElementById('task-name').value = task.task;
@@ -1077,416 +981,142 @@ Example:
             document.getElementById('modal-overlay').classList.add('show');
         }
 
-        // Close modal
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.remove('show');
-        }
+        function closeModal() { document.getElementById('modal-overlay').classList.remove('show'); }
 
-        // Save task
         function saveTask(event) {
             event.preventDefault();
-
             const id = document.getElementById('task-id').value;
-            const taskData = {
-                task: document.getElementById('task-name').value,
-                category: document.getElementById('task-category').value,
-                horizon: document.getElementById('task-horizon').value,
-                notes: document.getElementById('task-notes-field').value,
-            };
-
-            if (id) {
-                const task = tasks.find(t => t.id === parseInt(id));
-                if (task) {
-                    Object.assign(task, taskData);
-                }
-            } else {
-                tasks.push({
-                    id: getNextId(),
-                    ...taskData,
-                    completed: false
-                });
-            }
-
-            saveTasks();
-            render();
-            closeModal();
+            const taskData = { task: document.getElementById('task-name').value, category: document.getElementById('task-category').value, horizon: document.getElementById('task-horizon').value, notes: document.getElementById('task-notes-field').value };
+            if (id) { const task = tasks.find(t => t.id === parseInt(id)); if (task) Object.assign(task, taskData); }
+            else { tasks.push({ id: getNextId(), ...taskData, completed: false }); }
+            saveTasks(); render(); closeModal();
         }
 
-        // Close modal on overlay click
-        document.getElementById('modal-overlay').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('modal-overlay')) {
-                closeModal();
-            }
-        });
+        document.getElementById('modal-overlay').addEventListener('click', (e) => { if (e.target === document.getElementById('modal-overlay')) closeModal(); });
 
-        // ============ NOTEPAD FUNCTIONS ============
-
-        function toggleNotepad() {
-            notepadVisible = !notepadVisible;
-            document.getElementById('notepad-content').classList.toggle('show', notepadVisible);
-            document.getElementById('notepad-toggle').classList.toggle('collapsed', !notepadVisible);
-        }
-
-        function clearNotepad() {
-            document.getElementById('notepad-text').value = '';
-            localStorage.removeItem('notepad-text');
-        }
-
-        function saveApiKey(key) {
-            localStorage.setItem('anthropic-api-key', key);
-        }
-
-        // Auto-save notepad
-        document.getElementById('notepad-text').addEventListener('input', (e) => {
-            localStorage.setItem('notepad-text', e.target.value);
-        });
-
-        // ============ CLAUDE AI INTEGRATION ============
+        function toggleNotepad() { notepadVisible = !notepadVisible; document.getElementById('notepad-content').classList.toggle('show', notepadVisible); document.getElementById('notepad-toggle').classList.toggle('collapsed', !notepadVisible); }
+        function clearNotepad() { document.getElementById('notepad-text').value = ''; localStorage.removeItem('notepad-text'); }
+        function saveApiKey(key) { localStorage.setItem('anthropic-api-key', key); }
+        document.getElementById('notepad-text').addEventListener('input', (e) => { localStorage.setItem('notepad-text', e.target.value); });
 
         async function categorizeWithAI() {
             const apiKey = document.getElementById('api-key').value.trim();
             const notepadText = document.getElementById('notepad-text').value.trim();
             const statusEl = document.getElementById('ai-status');
-
-            if (!apiKey) {
-                statusEl.className = 'ai-status show error';
-                statusEl.textContent = 'Please enter your Anthropic API key first.';
-                return;
-            }
-
-            if (!notepadText) {
-                statusEl.className = 'ai-status show error';
-                statusEl.textContent = 'Please add some notes to categorize.';
-                return;
-            }
-
-            statusEl.className = 'ai-status show loading';
-            statusEl.textContent = 'Analyzing your notes with Claude...';
-
-            const categories = [
-                'PEOPLE', 'STATECRAFT', 'FINANCE', 'HOUSEHOLD',
-                'PERSONAL ADMIN', 'PERSONAL TECH', 'FAMILY DECISIONS',
-                'HEALTH', 'PERSONAL / CREATIVE GOALS'
-            ];
-
+            if (!apiKey) { statusEl.className = 'ai-status show error'; statusEl.textContent = 'Please enter your Anthropic API key first.'; return; }
+            if (!notepadText) { statusEl.className = 'ai-status show error'; statusEl.textContent = 'Please add some notes to categorize.'; return; }
+            statusEl.className = 'ai-status show loading'; statusEl.textContent = 'Analyzing with Claude...';
+            const categories = ['PEOPLE', 'STATECRAFT', 'FINANCE', 'HOUSEHOLD', 'PERSONAL ADMIN', 'PERSONAL TECH', 'FAMILY DECISIONS', 'HEALTH', 'PERSONAL / CREATIVE GOALS'];
             const horizons = ['Now', 'On Leave', 'After Leave'];
-
-            const prompt = `You are helping categorize tasks for a maternity leave planning app.
-
-The available categories are: ${categories.join(', ')}
-
-The available time horizons are:
-- "Now" = tasks to do before maternity leave
-- "On Leave" = tasks to do during maternity leave
-- "After Leave" = tasks to do after returning from leave
-
-Given these notes from the user, extract any tasks and categorize them. Return ONLY a JSON array with no other text. Each task should have this exact format:
-{"task": "task description", "category": "CATEGORY_NAME", "horizon": "Horizon Name"}
-
-User's notes:
-${notepadText}
-
-Return ONLY the JSON array, nothing else:`;
-
+            const prompt = `You are helping categorize tasks for a maternity leave planning app.\n\nCategories: ${categories.join(', ')}\n\nHorizons:\n- "Now" = before leave\n- "On Leave" = during leave\n- "After Leave" = after returning\n\nExtract tasks from these notes and return ONLY a JSON array:\n{"task": "description", "category": "CATEGORY", "horizon": "Horizon"}\n\nNotes:\n${notepadText}\n\nJSON array only:`;
             try {
                 const response = await fetch('https://api.anthropic.com/v1/messages', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'x-api-key': apiKey,
-                        'anthropic-version': '2023-06-01',
-                        'anthropic-dangerous-direct-browser-access': 'true'
-                    },
-                    body: JSON.stringify({
-                        model: 'claude-sonnet-4-20250514',
-                        max_tokens: 2048,
-                        messages: [{
-                            role: 'user',
-                            content: prompt
-                        }]
-                    })
+                    headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+                    body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 2048, messages: [{ role: 'user', content: prompt }] })
                 });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error?.message || 'API request failed');
-                }
-
+                if (!response.ok) { const error = await response.json(); throw new Error(error.error?.message || 'API request failed'); }
                 const data = await response.json();
                 const content = data.content[0].text;
-
-                // Parse the JSON response
                 let newTasks;
-                try {
-                    newTasks = JSON.parse(content);
-                } catch (e) {
-                    // Try to extract JSON from the response
-                    const match = content.match(/\[[\s\S]*\]/);
-                    if (match) {
-                        newTasks = JSON.parse(match[0]);
-                    } else {
-                        throw new Error('Could not parse AI response');
-                    }
-                }
-
-                if (!Array.isArray(newTasks) || newTasks.length === 0) {
-                    statusEl.className = 'ai-status show error';
-                    statusEl.textContent = 'No tasks found in your notes. Try adding more specific items.';
-                    return;
-                }
-
-                // Add the new tasks
+                try { newTasks = JSON.parse(content); } catch (e) { const match = content.match(/\[[\s\S]*\]/); if (match) newTasks = JSON.parse(match[0]); else throw new Error('Could not parse AI response'); }
+                if (!Array.isArray(newTasks) || newTasks.length === 0) { statusEl.className = 'ai-status show error'; statusEl.textContent = 'No tasks found. Try adding more specific items.'; return; }
                 let addedCount = 0;
                 newTasks.forEach(newTask => {
                     if (newTask.task && newTask.category && newTask.horizon) {
-                        // Validate category and horizon
-                        const validCategory = categories.includes(newTask.category) ? newTask.category : 'PERSONAL ADMIN';
-                        const validHorizon = horizons.includes(newTask.horizon) ? newTask.horizon : 'Now';
-
-                        tasks.push({
-                            id: getNextId(),
-                            task: newTask.task,
-                            category: validCategory,
-                            horizon: validHorizon,
-                            notes: '',
-                            completed: false
-                        });
+                        tasks.push({ id: getNextId(), task: newTask.task, category: categories.includes(newTask.category) ? newTask.category : 'PERSONAL ADMIN', horizon: horizons.includes(newTask.horizon) ? newTask.horizon : 'Now', notes: '', completed: false });
                         addedCount++;
                     }
                 });
-
-                saveTasks();
-                render();
-
-                statusEl.className = 'ai-status show success';
-                statusEl.textContent = `Added ${addedCount} task${addedCount !== 1 ? 's' : ''}! Check your columns.`;
-
-                // Clear notepad after successful import
-                setTimeout(() => {
-                    if (confirm('Tasks added! Clear the notepad?')) {
-                        clearNotepad();
-                    }
-                }, 500);
-
-            } catch (error) {
-                console.error('AI Error:', error);
-                statusEl.className = 'ai-status show error';
-                statusEl.textContent = `Error: ${error.message}`;
-            }
+                saveTasks(); render();
+                statusEl.className = 'ai-status show success'; statusEl.textContent = `Added ${addedCount} task${addedCount !== 1 ? 's' : ''}!`;
+                setTimeout(() => { if (confirm('Tasks added! Clear the notepad?')) clearNotepad(); }, 500);
+            } catch (error) { console.error('AI Error:', error); statusEl.className = 'ai-status show error'; statusEl.textContent = `Error: ${error.message}`; }
         }
 
-        // ============ DRAG AND DROP ============
-
         function setupDragAndDrop() {
-            const taskItems = document.querySelectorAll('.task-item');
-
-            taskItems.forEach(item => {
-                // Remove existing listeners by cloning
+            document.querySelectorAll('.task-item').forEach(item => {
                 const newItem = item.cloneNode(true);
                 item.parentNode.replaceChild(newItem, item);
-
-                // Touch events for mobile
                 newItem.addEventListener('touchstart', handleTouchStart, { passive: false });
                 newItem.addEventListener('touchmove', handleTouchMove, { passive: false });
                 newItem.addEventListener('touchend', handleTouchEnd);
-
-                // Mouse events for desktop
                 newItem.addEventListener('mousedown', handleMouseDown);
             });
-
             document.addEventListener('mousemove', handleMouseMove);
             document.addEventListener('mouseup', handleMouseUp);
         }
 
         function handleTouchStart(e) {
-            // Don't drag if touching checkbox, buttons, or textarea
-            if (e.target.closest('.task-checkbox, .task-action-btn, .task-notes-input, textarea, input')) {
-                return;
-            }
-
-            const touch = e.touches[0];
-            dragStartX = touch.clientX;
-            dragStartY = touch.clientY;
-
-            const item = e.currentTarget;
-            const taskId = parseInt(item.dataset.id);
-
-            // Start long press timer (300ms to initiate drag)
-            longPressTimer = setTimeout(() => {
-                startDrag(item, taskId, touch.clientX, touch.clientY);
-                // Vibrate if available
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            }, 300);
+            if (e.target.closest('.task-checkbox, .task-action-btn, .task-notes-input, textarea, input')) return;
+            const touch = e.touches[0]; dragStartX = touch.clientX; dragStartY = touch.clientY;
+            const item = e.currentTarget; const taskId = parseInt(item.dataset.id);
+            longPressTimer = setTimeout(() => { startDrag(item, taskId, touch.clientX, touch.clientY); if (navigator.vibrate) navigator.vibrate(50); }, 300);
         }
 
         function handleTouchMove(e) {
             const touch = e.touches[0];
-
-            // If we haven't started dragging yet, check if we've moved too much
-            if (longPressTimer && !isDragging) {
-                const dx = Math.abs(touch.clientX - dragStartX);
-                const dy = Math.abs(touch.clientY - dragStartY);
-                if (dx > 10 || dy > 10) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                    return; // Allow normal scroll
-                }
-            }
-
-            if (isDragging) {
-                e.preventDefault();
-                moveDrag(touch.clientX, touch.clientY);
-            }
+            if (longPressTimer && !isDragging) { if (Math.abs(touch.clientX - dragStartX) > 10 || Math.abs(touch.clientY - dragStartY) > 10) { clearTimeout(longPressTimer); longPressTimer = null; return; } }
+            if (isDragging) { e.preventDefault(); moveDrag(touch.clientX, touch.clientY); }
         }
 
-        function handleTouchEnd(e) {
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-
-            if (isDragging) {
-                endDrag();
-            }
-        }
+        function handleTouchEnd() { clearTimeout(longPressTimer); longPressTimer = null; if (isDragging) endDrag(); }
 
         function handleMouseDown(e) {
-            if (e.target.closest('.task-checkbox, .task-action-btn, .task-notes-input, textarea, input')) {
-                return;
-            }
-
-            const item = e.currentTarget;
-            const taskId = parseInt(item.dataset.id);
-
-            longPressTimer = setTimeout(() => {
-                startDrag(item, taskId, e.clientX, e.clientY);
-            }, 200);
-
-            dragStartX = e.clientX;
-            dragStartY = e.clientY;
+            if (e.target.closest('.task-checkbox, .task-action-btn, .task-notes-input, textarea, input')) return;
+            const item = e.currentTarget; const taskId = parseInt(item.dataset.id);
+            longPressTimer = setTimeout(() => { startDrag(item, taskId, e.clientX, e.clientY); }, 200);
+            dragStartX = e.clientX; dragStartY = e.clientY;
         }
 
         function handleMouseMove(e) {
-            if (longPressTimer && !isDragging) {
-                const dx = Math.abs(e.clientX - dragStartX);
-                const dy = Math.abs(e.clientY - dragStartY);
-                if (dx > 5 || dy > 5) {
-                    clearTimeout(longPressTimer);
-                    longPressTimer = null;
-                }
-            }
-
-            if (isDragging) {
-                moveDrag(e.clientX, e.clientY);
-            }
+            if (longPressTimer && !isDragging) { if (Math.abs(e.clientX - dragStartX) > 5 || Math.abs(e.clientY - dragStartY) > 5) { clearTimeout(longPressTimer); longPressTimer = null; } }
+            if (isDragging) moveDrag(e.clientX, e.clientY);
         }
 
-        function handleMouseUp(e) {
-            clearTimeout(longPressTimer);
-            longPressTimer = null;
-
-            if (isDragging) {
-                endDrag();
-            }
-        }
+        function handleMouseUp() { clearTimeout(longPressTimer); longPressTimer = null; if (isDragging) endDrag(); }
 
         function startDrag(item, taskId, x, y) {
-            isDragging = true;
-            draggedTask = tasks.find(t => t.id === taskId);
-
-            const rect = item.getBoundingClientRect();
-            dragOffsetX = x - rect.left;
-            dragOffsetY = y - rect.top;
-
-            // Create dragging clone
-            draggedElement = item.cloneNode(true);
-            draggedElement.classList.add('dragging');
-            draggedElement.style.width = rect.width + 'px';
-            draggedElement.style.left = (x - dragOffsetX) + 'px';
-            draggedElement.style.top = (y - dragOffsetY) + 'px';
-            document.body.appendChild(draggedElement);
-
-            // Add placeholder class to original
-            item.classList.add('drag-placeholder');
+            isDragging = true; draggedTask = tasks.find(t => t.id === taskId);
+            const rect = item.getBoundingClientRect(); dragOffsetX = x - rect.left; dragOffsetY = y - rect.top;
+            draggedElement = item.cloneNode(true); draggedElement.classList.add('dragging');
+            draggedElement.style.width = rect.width + 'px'; draggedElement.style.left = (x - dragOffsetX) + 'px'; draggedElement.style.top = (y - dragOffsetY) + 'px';
+            document.body.appendChild(draggedElement); item.classList.add('drag-placeholder');
         }
 
         function moveDrag(x, y) {
             if (!draggedElement) return;
-
-            draggedElement.style.left = (x - dragOffsetX) + 'px';
-            draggedElement.style.top = (y - dragOffsetY) + 'px';
-
-            // Check which column we're over
-            const columns = document.querySelectorAll('.horizon-column:not(.horizon-completed)');
-            columns.forEach(col => {
+            draggedElement.style.left = (x - dragOffsetX) + 'px'; draggedElement.style.top = (y - dragOffsetY) + 'px';
+            document.querySelectorAll('.horizon-column:not(.horizon-completed)').forEach(col => {
                 const rect = col.getBoundingClientRect();
-                const isOver = x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom;
-                col.classList.toggle('drag-over', isOver);
+                col.classList.toggle('drag-over', x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom);
             });
         }
 
         function endDrag() {
-            if (!draggedElement || !draggedTask) {
-                isDragging = false;
-                return;
-            }
-
-            // Find which column we dropped on
+            if (!draggedElement || !draggedTask) { isDragging = false; return; }
             const columns = document.querySelectorAll('.horizon-column:not(.horizon-completed)');
             let targetHorizon = null;
-
             const dragRect = draggedElement.getBoundingClientRect();
-            const centerX = dragRect.left + dragRect.width / 2;
-            const centerY = dragRect.top + dragRect.height / 2;
-
-            columns.forEach(col => {
-                const rect = col.getBoundingClientRect();
-                if (centerX >= rect.left && centerX <= rect.right && centerY >= rect.top && centerY <= rect.bottom) {
-                    targetHorizon = col.dataset.horizon;
-                }
-                col.classList.remove('drag-over');
-            });
-
-            // Remove dragging element
-            draggedElement.remove();
-            draggedElement = null;
-
-            // Remove placeholder
-            document.querySelectorAll('.drag-placeholder').forEach(el => {
-                el.classList.remove('drag-placeholder');
-            });
-
-            // Move task if dropped on a valid column
-            if (targetHorizon && targetHorizon !== draggedTask.horizon) {
-                moveTask(draggedTask.id, targetHorizon);
-                // Vibrate on successful drop
-                if (navigator.vibrate) {
-                    navigator.vibrate([30, 20, 30]);
-                }
-            }
-
-            draggedTask = null;
-            isDragging = false;
+            const centerX = dragRect.left + dragRect.width / 2; const centerY = dragRect.top + dragRect.height / 2;
+            columns.forEach(col => { const rect = col.getBoundingClientRect(); if (centerX >= rect.left && centerX <= rect.right && centerY >= rect.top && centerY <= rect.bottom) targetHorizon = col.dataset.horizon; col.classList.remove('drag-over'); });
+            draggedElement.remove(); draggedElement = null;
+            document.querySelectorAll('.drag-placeholder').forEach(el => el.classList.remove('drag-placeholder'));
+            if (targetHorizon && targetHorizon !== draggedTask.horizon) { moveTask(draggedTask.id, targetHorizon); if (navigator.vibrate) navigator.vibrate([30, 20, 30]); }
+            draggedTask = null; isDragging = false;
         }
-
-        // ============ SCROLL INDICATOR ============
 
         function setupScrollIndicator() {
             const wrapper = document.getElementById('horizons-wrapper');
             const dots = document.querySelectorAll('.column-dot');
-
             wrapper.addEventListener('scroll', () => {
                 const scrollLeft = wrapper.scrollLeft;
-                const columnWidth = wrapper.querySelector('.horizon-column').offsetWidth + 20;
+                const columnWidth = wrapper.querySelector('.horizon-column').offsetWidth + 18;
                 const activeIndex = Math.round(scrollLeft / columnWidth);
-
-                dots.forEach((dot, i) => {
-                    dot.classList.toggle('active', i === activeIndex);
-                });
+                dots.forEach((dot, i) => dot.classList.toggle('active', i === activeIndex));
             });
         }
 
-        // Initialize
         init();
     </script>
 </body>
