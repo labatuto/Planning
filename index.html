@@ -760,6 +760,76 @@
             background: var(--coral);
             transform: scale(1.3);
         }
+
+        /* ---- Toast notification ---- */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--bg-secondary);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-family: var(--font);
+            z-index: 9000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            max-width: 90vw;
+            text-align: center;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        /* ---- Sync confirmation banner ---- */
+        .sync-banner {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            background: linear-gradient(135deg, var(--coral), var(--peach));
+            color: white;
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            z-index: 9001;
+            font-family: var(--font);
+            font-size: 0.88rem;
+            font-weight: 500;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            transform: translateY(-100%);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .sync-banner.show {
+            transform: translateY(0);
+        }
+        .sync-banner-btn {
+            padding: 6px 16px;
+            border-radius: 8px;
+            border: none;
+            font-family: var(--font);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: filter 0.2s;
+        }
+        .sync-banner-btn:hover { filter: brightness(1.1); }
+        .sync-banner-btn.accept {
+            background: white;
+            color: var(--coral);
+        }
+        .sync-banner-btn.decline {
+            background: rgba(255,255,255,0.25);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -779,6 +849,7 @@
             <div class="toolbar-actions">
                 <button class="toolbar-btn" id="btn-completed" onclick="toggleCompleted()" title="Show completed">&#10003;</button>
                 <button class="toolbar-btn" onclick="openNotepad()" title="Notepad">&#9998;</button>
+                <button class="toolbar-btn" onclick="shareTasks()" title="Share list to another device">&#8644;</button>
             </div>
         </div>
 
@@ -910,6 +981,16 @@
         </div>
     </div>
 
+    <!-- Sync confirmation banner -->
+    <div class="sync-banner" id="sync-banner">
+        <span id="sync-info">Load shared task list?</span>
+        <button class="sync-banner-btn accept" id="sync-accept">Load</button>
+        <button class="sync-banner-btn decline" id="sync-decline">No thanks</button>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
     <script>
         // ================================================
         // Constants
@@ -1006,14 +1087,21 @@
         function init() {
             const saved = localStorage.getItem('maternity-tasks-v2');
             if (saved) {
-                tasks = JSON.parse(saved);
-                tasks = migrateTasks(tasks);
+                try {
+                    tasks = JSON.parse(saved);
+                    tasks = migrateTasks(tasks);
+                } catch (e) {
+                    tasks = JSON.parse(JSON.stringify(initialTasks));
+                }
             } else {
-                // Check for v1 data
                 const v1 = localStorage.getItem('maternity-tasks');
                 if (v1) {
-                    tasks = JSON.parse(v1);
-                    tasks = migrateTasks(tasks);
+                    try {
+                        tasks = JSON.parse(v1);
+                        tasks = migrateTasks(tasks);
+                    } catch (e) {
+                        tasks = JSON.parse(JSON.stringify(initialTasks));
+                    }
                 } else {
                     tasks = JSON.parse(JSON.stringify(initialTasks));
                 }
@@ -1030,6 +1118,7 @@
             render();
             initDragAndDrop();
             initColumnDots();
+            checkUrlForSync();
         }
 
         function migrateTasks(taskList) {
@@ -1065,6 +1154,116 @@
         function saveNotepad() {
             notepadText = document.getElementById('notepad-textarea').value;
             localStorage.setItem('maternity-notepad', notepadText);
+        }
+
+        // ================================================
+        // Sync & Sharing
+        // ================================================
+        async function compressAndEncode(data) {
+            const json = JSON.stringify(data);
+            try {
+                const blob = new Blob([json]);
+                const stream = blob.stream().pipeThrough(new CompressionStream('deflate'));
+                const buf = await new Response(stream).arrayBuffer();
+                const bytes = new Uint8Array(buf);
+                let bin = '';
+                for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+                return 'z' + btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            } catch (e) {
+                return 'b' + btoa(unescape(encodeURIComponent(json))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+            }
+        }
+
+        async function decodeAndDecompress(encoded) {
+            const prefix = encoded[0];
+            const b64 = encoded.slice(1).replace(/-/g, '+').replace(/_/g, '/');
+            const padded = b64 + '==='.slice(0, (4 - b64.length % 4) % 4);
+
+            if (prefix === 'z') {
+                const bin = atob(padded);
+                const bytes = new Uint8Array(bin.length);
+                for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+                const blob = new Blob([bytes]);
+                const stream = blob.stream().pipeThrough(new DecompressionStream('deflate'));
+                const text = await new Response(stream).text();
+                return JSON.parse(text);
+            } else {
+                const json = decodeURIComponent(escape(atob(padded)));
+                return JSON.parse(json);
+            }
+        }
+
+        async function shareTasks() {
+            try {
+                const encoded = await compressAndEncode(tasks);
+                const url = window.location.origin + window.location.pathname + '#sync=' + encoded;
+
+                if (navigator.share) {
+                    try {
+                        await navigator.share({ title: 'Task Planner', url: url });
+                        showToast('Shared!');
+                        return;
+                    } catch (e) {
+                        if (e.name === 'AbortError') return;
+                    }
+                }
+
+                await navigator.clipboard.writeText(url);
+                showToast('Link copied! Open it on your other device.');
+            } catch (e) {
+                showToast('Could not create share link.');
+            }
+        }
+
+        async function checkUrlForSync() {
+            const hash = window.location.hash;
+            if (!hash.startsWith('#sync=')) return;
+            const encoded = hash.slice(6);
+            if (!encoded) return;
+            try {
+                const imported = await decodeAndDecompress(encoded);
+                if (!Array.isArray(imported) || imported.length === 0) return;
+                showSyncBanner(imported);
+            } catch (e) {
+                showToast('Could not read shared link.');
+                history.replaceState(null, '', window.location.pathname);
+            }
+        }
+
+        function showSyncBanner(importedTasks) {
+            const banner = document.getElementById('sync-banner');
+            const count = importedTasks.length;
+            const completed = importedTasks.filter(t => t.completed).length;
+            document.getElementById('sync-info').textContent =
+                count + ' tasks (' + completed + ' done) — load this list?';
+            banner.classList.add('show');
+
+            document.getElementById('sync-accept').onclick = function() {
+                tasks = migrateTasks(importedTasks);
+                assignPriorities();
+                saveTasks();
+                render();
+                banner.classList.remove('show');
+                history.replaceState(null, '', window.location.pathname);
+                showToast('Tasks synced!');
+            };
+
+            document.getElementById('sync-decline').onclick = function() {
+                banner.classList.remove('show');
+                history.replaceState(null, '', window.location.pathname);
+            };
+        }
+
+        let toastTimer;
+        function showToast(msg) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            clearTimeout(toastTimer);
+            el.classList.remove('show');
+            requestAnimationFrame(function() {
+                el.classList.add('show');
+                toastTimer = setTimeout(function() { el.classList.remove('show'); }, 3000);
+            });
         }
 
         // ================================================
@@ -1770,6 +1969,22 @@ Return ONLY the JSON array, no markdown fencing, no explanation.`;
 
         document.getElementById('apikey-modal').addEventListener('click', (e) => {
             if (e.target === document.getElementById('apikey-modal')) closeApiKeyModal();
+        });
+
+        // Cross-tab sync: pick up changes from another tab on the same device
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'maternity-tasks-v2' && e.newValue) {
+                try {
+                    tasks = JSON.parse(e.newValue);
+                    tasks = migrateTasks(tasks);
+                    assignPriorities();
+                    render();
+                } catch (err) { /* ignore corrupt data */ }
+            }
+            if (e.key === 'maternity-notepad') {
+                const ta = document.getElementById('notepad-textarea');
+                if (ta) ta.value = e.newValue || '';
+            }
         });
 
         // ================================================
